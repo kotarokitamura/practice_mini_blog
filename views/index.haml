@@ -1,0 +1,5 @@
+%ul
+  -@blogs.each do |blog|
+    %li
+      %a{"href" => "/blogs/#{blog.id}"}
+        =blog.title

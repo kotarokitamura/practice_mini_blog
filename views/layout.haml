@@ -1,0 +1,15 @@
+!!!
+%html
+  %head
+    %meta{"chareset"=>"UTF-8"}
+    %title mblog
+    %meta{"http-equiv"=>"Content-Script-type", "content"=>"text/javascript"}
+    %meta{"http-equiv"=>"Content-Style-type", "content"=>"text/css"}
+  %body
+    %a{"href" => "/blogs"}
+      home
+    |
+    %a{"href" => "/blogs/new/"}
+      new
+    %div
+      = yield
