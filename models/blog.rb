@@ -2,7 +2,7 @@
 class Blog
   UPDATABLE = [:id, :title, :body]
   TITLE_MAX_LENGTH = 50
-  BODY_MAX_LENGTH= 300
+  BODY_MAX_LENGTH = 300
   #-----------------------------
   # class methods
   #-----------------------------
