@@ -1,5 +1,5 @@
 development:
-  database: mblog
+  database: mblog 
   host: localhost 
   username: root
   password: 

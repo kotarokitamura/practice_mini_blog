@@ -31,37 +31,41 @@ class Blog
   #-----------------------------
   # instance methods
   #-----------------------------
-  def id
-    @id
-  end
+  
+  attr_accessor :id,:title,:body,:error_message
 
-  def id=(value)
-    @id = value
-  end
+#  def id
+#    @id
+#  end
 
-  def title
-    @title || ""
-  end
+#  def id=(value)
+#    @id = value
+#  end
 
-  def title=(value)
-    @title = value
-  end
 
-  def body
-    @body || ""
-  end
+#  def title
+#    @title || ""
+#  end
 
-  def body=(value)
-    @body = value
-  end
+#  def title=(value)
+#    @title = value
+#  end
 
-  def error_message
-    @error_message || ""
-  end
+#  def body
+#    @body || ""
+#  end
 
-  def error_message=(value)
-    @error_message = value
-  end
+#  def body=(value)
+#    @body = value
+#  end
+
+#  def error_message
+#    @error_message || ""
+#  end
+
+#  def error_message=(value)
+#    @error_message = value
+#  end
 
   def save_valid?
     if valid?
