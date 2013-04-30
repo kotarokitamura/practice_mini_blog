@@ -1,7 +1,8 @@
 # create table blogs (id INT UNSIGNED NOT NULL AUTO_INCREMENT,title TEXT, body TEXT, created_at DATETIME, updated_at DATETIME,primary key(id));
 class Blog
   UPDATABLE = [:id, :title, :body]
-
+  TITLE_MAX_LENGTH = 50
+  BODY_MAX_LENGTH= 300
   #-----------------------------
   # class methods
   #-----------------------------
@@ -32,41 +33,9 @@ class Blog
   # instance methods
   #-----------------------------
   
-  attr_accessor :id,:title,:body,:error_message
+  attr_accessor :id,:title,:body
   attr_reader :error_message
 
-#  def id
-#    @id
-#  end
-
-#  def id=(value)
-#    @id = value
-#  end
-
-
-#  def title
-#    @title || ""
-#  end
-
-#  def title=(value)
-#    @title = value
-#  end
-
-#  def body
-#    @body || ""
-#  end
-
-#  def body=(value)
-#    @body = value
-#  end
-
-#  def error_message
-#    @error_message || ""
-#  end
-
-#  def error_message=(value)
-#    @error_message = value
-#  end
 
   def save_valid?
     if valid?
@@ -91,8 +60,8 @@ class Blog
     message = []
     message << "title should not be blank." if title == ""
     message << "body should not be blank." if body == ""
-    message << "word count of title should be under 50 capitals" if title.length > 50
-    message << "word count of body should be under 300 capitals" if body.length > 300
+    message << "word count of title should be under 50 capitals" if title.length > TITLE_MAX_LENGTH 
+    message << "word count of body should be under 300 capitals" if body.length > BODY_MAX_LENGTH
     if message == []
       true
     else
