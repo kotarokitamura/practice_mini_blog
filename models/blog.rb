@@ -33,6 +33,7 @@ class Blog
   #-----------------------------
   
   attr_accessor :id,:title,:body,:error_message
+  attr_reader :error_message
 
 #  def id
 #    @id
@@ -93,7 +94,7 @@ class Blog
     if message == []
       true
     else
-      error_message = message.join('\n')
+      @error_message = message.join('<br>')
       false
     end
   end
