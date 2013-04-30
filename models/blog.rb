@@ -60,8 +60,8 @@ class Blog
     message = []
     message << "title should not be blank." if title == ""
     message << "body should not be blank." if body == ""
-    message << "word count of title should be under 50 capitals" if title.length > TITLE_MAX_LENGTH 
-    message << "word count of body should be under 300 capitals" if body.length > BODY_MAX_LENGTH
+    message << "word count of title should be under #{TITLE_MAX_LENGTH} capitals" if title.length > TITLE_MAX_LENGTH 
+    message << "word count of body should be under #{BODY_MAX_LENGTH} capitals" if body.length > BODY_MAX_LENGTH
     if message == []
       true
     else
