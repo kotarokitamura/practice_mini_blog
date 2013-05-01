@@ -57,16 +57,52 @@ class Blog
   end
 
   def valid?
-    message = []
-    message << "title should not be blank." if title == ""
-    message << "body should not be blank." if body == ""
-    message << "word count of title should be under #{TITLE_MAX_LENGTH} capitals" if title.length > TITLE_MAX_LENGTH 
-    message << "word count of body should be under #{BODY_MAX_LENGTH} capitals" if body.length > BODY_MAX_LENGTH
-    if message == []
+    @message = []
+    valid_title_empty?
+    valid_body_empty?
+    valid_title_under_character_limit?
+    valid_body_under_character_limit?
+    if @message == []
       true
     else
-      @error_message = message.join('<br>')
+      @error_message = @message.join('<br>')
       false
+    end
+  end
+
+  def valid_title_empty?
+    if title == ""
+      # @message << "title should not be blank." 
+      false
+    else
+      true
+    end
+  end    
+
+  def valid_body_empty?
+    if body == ""
+      # @message << "body should not be empty"
+      false
+    else
+      true
+    end
+  end
+
+  def valid_title_under_character_limit?
+    if title.length >TITLE_MAX_LENGTH
+      # @message << "word count of title should be under #{TITLE_MAX_LENGTH} capitals" 
+      false 
+    else
+      true
+    end
+  end
+
+  def valid_body_under_character_limit?
+    if body.length >BODY_MAX_LENGTH
+      # @message << "word count of title should be under #{BODY_MAX_LENGTH} capitals" 
+      false 
+    else 
+      true
     end
   end
 
