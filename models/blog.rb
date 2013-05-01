@@ -60,7 +60,7 @@ class Blog
   end
 
   def check_all_valid?
-    valid_title_empty?
+    @message << "title should not be blank." if title_empty?
     valid_body_empty?
     valid_title_under_character_limit?
     valid_body_under_character_limit?
@@ -72,14 +72,9 @@ class Blog
     end
   end
 
-  def valid_title_empty?
-    if title == ""
-      @message << "title should not be blank." 
-      false
-    else
-      true
-    end
-  end    
+  def title_empty?
+    title == ""
+  end
 
   def valid_body_empty?
     if body == ""
