@@ -36,9 +36,12 @@ class Blog
   attr_accessor :id,:title,:body
   attr_reader :error_message
 
+  def initialize 
+    @message = []
+  end
 
   def save_valid?
-    if valid?
+    if check_all_valid?
       client = ConnectDb.get_client
       q = if new_record?
         "INSERT INTO blogs(title,body) VALUES ('#{title}','#{body}')"
@@ -56,8 +59,7 @@ class Blog
     self.id.nil?
   end
 
-  def valid?
-    @message = []
+  def check_all_valid?
     valid_title_empty?
     valid_body_empty?
     valid_title_under_character_limit?
@@ -72,7 +74,7 @@ class Blog
 
   def valid_title_empty?
     if title == ""
-      # @message << "title should not be blank." 
+      @message << "title should not be blank." 
       false
     else
       true
@@ -81,7 +83,7 @@ class Blog
 
   def valid_body_empty?
     if body == ""
-      # @message << "body should not be empty"
+      @message << "body should not be empty"
       false
     else
       true
@@ -90,7 +92,7 @@ class Blog
 
   def valid_title_under_character_limit?
     if title.length >TITLE_MAX_LENGTH
-      # @message << "word count of title should be under #{TITLE_MAX_LENGTH} capitals" 
+      @message << "word count of title should be under #{TITLE_MAX_LENGTH} capitals" 
       false 
     else
       true
@@ -99,7 +101,7 @@ class Blog
 
   def valid_body_under_character_limit?
     if body.length >BODY_MAX_LENGTH
-      # @message << "word count of title should be under #{BODY_MAX_LENGTH} capitals" 
+      @message << "word count of title should be under #{BODY_MAX_LENGTH} capitals" 
       false 
     else 
       true
