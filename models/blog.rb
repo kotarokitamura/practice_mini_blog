@@ -1,9 +1,10 @@
 # create table blogs (id INT UNSIGNED NOT NULL AUTO_INCREMENT,title TEXT, body TEXT, created_at DATETIME, updated_at DATETIME,primary key(id));
 class Blog
-  UPDATABLE = [:id, :title, :body]
+  UPDATABLE = [:id, :title, :body, :created_at]
   TITLE_MAX_LENGTH = 50
   BODY_MAX_LENGTH = 300
-  #-----------------------------
+  SECONDS_OF_DAY = 86400  
+  #----------------------------
   # class methods
   #-----------------------------
   def self.select_blog(params)
@@ -19,7 +20,7 @@ class Blog
     blogs = []
     ConnectDb.get_client.query("SELECT * FROM blogs").each do |row|
       blog = Blog.new
-      blogs << blog.set_params({:id => row["id"], :title => row["title"], :body => row["body"]})
+      blogs << blog.set_params({:id => row["id"], :title => row["title"], :body => row["body"], :created_at => row["created_at"]})
     end
     blogs
   end
@@ -33,11 +34,12 @@ class Blog
   # instance methods
   #-----------------------------
   
-  attr_accessor :id,:title,:body
+  attr_accessor :id,:title,:body,:created_at
   attr_reader :error_message
 
   def initialize 
     @message = []
+    @blog_article_messages = []
   end
 
   def save_valid?
@@ -96,4 +98,13 @@ class Blog
     self
   end
 
+  def blog_messages
+    @blog_article_messages << "new!" if created_new?
+    @blog_article_messages.join('<br>')
+  end
+
+  def created_new?
+    Time.now - created_at < SECONDS_OF_DAY   
+  end 
+ 
 end
