@@ -3,8 +3,6 @@ require 'rspec'
 require File.expand_path(File.dirname(__FILE__) + "/../../models/blog.rb") 
 
 describe Blog do
-  TITLE_MAX_LENGTH = 50
-  BODY_MAX_LENGTH = 300
   before do
     @blog = Blog.new
   end
@@ -22,18 +20,18 @@ describe Blog do
   end   
     
   
-  it "should return false when title has over #{TITLE_MAX_LENGTH} charactors" do
+  it "should return false when title has over #{Blog::TITLE_MAX_LENGTH} charactors" do
     @blog.title = "a"
-    TITLE_MAX_LENGTH.times do 
+    Blog::TITLE_MAX_LENGTH.times do 
       @blog.title << "a"
     end
     @blog.body = "bbb"
     @blog.should_not be_valid_title_under_character_limit
   end
 
-  it "should return false when title has over #{BODY_MAX_LENGTH} charactors" do
+  it "should return false when title has over #{Blog::BODY_MAX_LENGTH} charactors" do
     @blog.body = "aaa"
-    BODY_MAX_LENGTH.times do 
+    Blog::BODY_MAX_LENGTH.times do 
       @blog.body << "a"
     end
     @blog.title = "bbb"
