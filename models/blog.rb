@@ -61,9 +61,9 @@ class Blog
 
   def check_all_valid?
     @message << "title should not be blank." if title_empty?
-    valid_body_empty?
-    valid_title_under_character_limit?
-    valid_body_under_character_limit?
+    @message << "body should not be empty" if body_empty?
+    @message << "word count of title should be under #{TITLE_MAX_LENGTH} capitals" if title_over_limit? 
+    @message << "word count of title should be under #{BODY_MAX_LENGTH} capitals" if body_over_limit? 
     if @message == []
       true
     else
@@ -76,31 +76,16 @@ class Blog
     title == ""
   end
 
-  def valid_body_empty?
-    if body == ""
-      @message << "body should not be empty"
-      false
-    else
-      true
-    end
+  def body_empty?
+    body == ""
   end
 
-  def valid_title_under_character_limit?
-    if title.length >TITLE_MAX_LENGTH
-      @message << "word count of title should be under #{TITLE_MAX_LENGTH} capitals" 
-      false 
-    else
-      true
-    end
+  def title_over_limit?
+    title.length > TITLE_MAX_LENGTH
   end
 
-  def valid_body_under_character_limit?
-    if body.length >BODY_MAX_LENGTH
-      @message << "word count of title should be under #{BODY_MAX_LENGTH} capitals" 
-      false 
-    else 
-      true
-    end
+  def body_over_limit?
+    body.length > BODY_MAX_LENGTH
   end
 
   def set_params(params)
