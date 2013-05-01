@@ -44,9 +44,9 @@ class Blog
     if check_all_valid?
       client = ConnectDb.get_client
       q = if new_record?
-        "INSERT INTO blogs(title,body) VALUES ('#{title}','#{body}')"
+        "INSERT INTO blogs(title,body,created_at,updated_at) VALUES ('#{title}','#{body}','#{Time.now}','#{Time.now}')"
       else
-        "UPDATE blogs SET title='#{title}',body='#{body}' WHERE id=#{id}"
+        "UPDATE blogs SET title='#{title}',body='#{body}',updated_at='#{Time.now}'  WHERE id=#{id}"
       end
       client.query(q)
       true
