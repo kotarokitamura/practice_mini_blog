@@ -45,6 +45,12 @@ class BlogsController < Sinatra::Base
     redirect '/blogs'
   end
 
+  helpers do
+    def blog_message(blog)
+      blog.created_new? ? "new" : ""
+    end
+  end
+
   private
   def set_blog
     @blog = Blog.select_blog(params)

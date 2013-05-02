@@ -98,11 +98,6 @@ class Blog
     self
   end
 
-  def blog_messages
-    @blog_article_messages << "new!" if created_new?
-    @blog_article_messages.join('<br>')
-  end
-
   def created_new?
     Time.now - created_at < SECONDS_OF_DAY   
   end 
