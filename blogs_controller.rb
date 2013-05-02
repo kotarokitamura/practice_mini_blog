@@ -7,6 +7,7 @@ class BlogsController < Sinatra::Base
 
   get '/blogs/:id' do
     set_blog
+    set_comments
     haml :show
   end
 
@@ -40,10 +41,21 @@ class BlogsController < Sinatra::Base
     end
   end
 
+  post '/blogs/:id/comments' do
+    @comment = Comment.new
+    @comment.set_params(params)
+    @comment.save_valid?
+    redirect '/blogs'
+  end
+
   delete '/blogs/:id' do
     Blog.delete_one(params)
     redirect '/blogs'
   end
+
+  delete '/blogs/:id/comments/:id' do
+  end
+
 
   helpers do
     def blog_message(blog)
@@ -51,8 +63,13 @@ class BlogsController < Sinatra::Base
     end
   end
 
+
   private
   def set_blog
     @blog = Blog.select_blog(params)
+  end
+
+  def set_comments
+    @comments = Comment.select_all_comments(params)
   end
 end
