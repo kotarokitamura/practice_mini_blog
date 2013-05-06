@@ -44,8 +44,13 @@ class BlogsController < Sinatra::Base
   post '/blogs/:id/comments' do
     @comment = Comment.new
     @comment.set_params(params)
-    @comment.save_valid?
-    redirect '/blogs'
+    if @comment.save_valid?
+      redirect '/blogs'
+    else 
+      set_blog
+      set_comments
+      haml :show
+    end
   end
 
   delete '/blogs/:id' do
@@ -54,12 +59,18 @@ class BlogsController < Sinatra::Base
   end
 
   delete '/blogs/:id/comments/:id' do
+    Comment.delete_one(params)
+    redirect '/blogs'
   end
 
 
   helpers do
     def blog_message(blog)
       blog.created_new? ? "new" : ""
+    end
+     
+    def comment_message(comment)
+      comment.created_new? ? "new" : ""
     end
   end
 

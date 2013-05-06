@@ -13,12 +13,18 @@
   -@comments.each do |comment|
     %li
       #{comment.body}
-    %a{"href" => ""}
-      delete 
+      %p
+        =comment_message(comment)
+    %form{"action"=>"/blogs/#{@blog.id}/comments/#{comment.id}", "method" => "post"}
+      %input{"type"=>"hidden","value"=>"DELETE","name"=>"_method"}
+      %input{"type"=>"submit","value"=>"delete"}
 
 %form{"action" => "/blogs/#{@blog.id}/comments" ,"method" => "post"}
   %div 
     %textarea{"name" => "body"}
   %div
     %input{"type" => "submit", "value" => "submit"}
+
+%p
+  =@comment.error_message if  @comment!=nil
 

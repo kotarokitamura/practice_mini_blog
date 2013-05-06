@@ -1,6 +1,8 @@
 # create table comments (id INT UNSIGNED NOT NULL AUTO_INCREMENT,blog_id INT, body TEXT, created_at DATETIME, primary key(id));
-class Comment
-  UPDATABLE = [:id, :body, :created_at]
+require File.dirname(__FILE__) + '/content.rb'
+class Comment < Content
+  COMMENT_MAX_LENGTH = 50
+  @table_name = "comments"
 
   def self.select_all_comments(params)
     comments = []
@@ -11,19 +13,35 @@ class Comment
     comments
   end
 
-  attr_accessor :id, :body, :created_at
+  attr_accessor :id, :body, :created_at, :error_message
 
-  def save_valid?
-    client = ConnectDb.get_client
-    client.query("INSERT INTO comments(body,created_at,blog_id) VALUES ('#{body}','#{created_at}','#{@id}')")
+  def save_valid? 
+    @query_info = "INSERT INTO comments(body,created_at,blog_id) VALUES ('#{body}','#{Time.now}','#{id}')"
+    super
+  end
+
+  def check_all_valid?
+    @message << "Comment is empty" if comment_empty?
+    @message << "Comment has under #{COMMENT_MAX_LENGTH} charactors" if comment_over_limit?
+    if @message == []
+      true
+    else 
+      self.error_message = @message.join('<br>')
+      false 
+    end
   end
   
-  def set_params(params)
-    params.each do |key,val|
-      next unless UPDATABLE.include?(key.to_sym)
-      self.send(key.to_s+"=",val)
-    end
-    self
+  def created_new?
+    Time.now - created_at < SECONDS_OF_DAY
   end
+
+  def comment_empty?
+    body == ""
+  end
+
+  def comment_over_limit?
+    body.length > COMMENT_MAX_LENGTH
+  end 
+
 end
 

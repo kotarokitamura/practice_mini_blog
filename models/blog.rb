@@ -1,9 +1,10 @@
 # create table blogs (id INT UNSIGNED NOT NULL AUTO_INCREMENT,title TEXT, body TEXT, created_at DATETIME, updated_at DATETIME,primary key(id));
-class Blog
-  UPDATABLE = [:id, :title, :body, :created_at]
+require File.dirname(__FILE__) + '/content.rb'
+class Blog < Content
   TITLE_MAX_LENGTH = 50
   BODY_MAX_LENGTH = 300
-  SECONDS_OF_DAY = 86400  
+  @table_name = "blogs"
+
   #----------------------------
   # class methods
   #-----------------------------
@@ -25,10 +26,6 @@ class Blog
     blogs
   end
 
-  def self.delete_one(params)
-    idstr = params["id"]
-    ConnectDb.get_client.query("DELETE FROM blogs WHERE id=#{idstr}")
-  end
 
   #-----------------------------
   # instance methods
@@ -37,24 +34,13 @@ class Blog
   attr_accessor :id,:title,:body,:created_at
   attr_reader :error_message
 
-  def initialize 
-    @message = []
-    @blog_article_messages = []
-  end
-
-  def save_valid?
-    if check_all_valid?
-      client = ConnectDb.get_client
-      q = if new_record?
-        "INSERT INTO blogs(title,body,created_at,updated_at) VALUES ('#{title}','#{body}','#{Time.now}','#{Time.now}')"
-      else
-        "UPDATE blogs SET title='#{title}',body='#{body}',updated_at='#{Time.now}'  WHERE id=#{id}"
-      end
-      client.query(q)
-      true
+  def save_valid?  
+    @query_info = if new_record?
+      "INSERT INTO blogs(title,body,created_at,updated_at) VALUES ('#{title}','#{body}','#{Time.now}','#{Time.now}')"
     else
-      false
+      "UPDATE blogs SET title='#{title}',body='#{body}',updated_at='#{Time.now}'  WHERE id=#{id}" 
     end
+    super
   end
 
   def new_record?
@@ -90,16 +76,4 @@ class Blog
     body.length > BODY_MAX_LENGTH
   end
 
-  def set_params(params)
-    params.each do |key, val|
-      next unless UPDATABLE.include?(key.to_sym)
-      self.send(key.to_s+"=", val)
-    end
-    self
-  end
-
-  def created_new?
-    Time.now - created_at < SECONDS_OF_DAY   
-  end 
- 
 end
