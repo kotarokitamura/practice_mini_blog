@@ -54,12 +54,12 @@ class BlogsController < Sinatra::Base
   end
 
   delete '/blogs/:id' do
-    Blog.delete_one(params)
+    Blog.delete_one(params,'blogs')
     redirect '/blogs'
   end
 
   delete '/blogs/:id/comments/:id' do
-    Comment.delete_one(params)
+    Comment.delete_one(params,'comments')
     redirect '/blogs'
   end
 

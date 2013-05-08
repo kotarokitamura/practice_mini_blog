@@ -3,7 +3,6 @@ require File.dirname(__FILE__) + '/content.rb'
 class Blog < Content
   TITLE_MAX_LENGTH = 50
   BODY_MAX_LENGTH = 300
-  @table_name = "blogs"
 
   #----------------------------
   # class methods
@@ -52,20 +51,11 @@ class Blog < Content
     @message << "body should not be empty" if body_empty?
     @message << "word count of title should be under #{TITLE_MAX_LENGTH} capitals" if title_over_limit? 
     @message << "word count of title should be under #{BODY_MAX_LENGTH} capitals" if body_over_limit? 
-    if @message == []
-      true
-    else
-      @error_message = @message.join('<br>')
-      false
-    end
+    super
   end
 
   def title_empty?
     title == ""
-  end
-
-  def body_empty?
-    body == ""
   end
 
   def title_over_limit?

@@ -2,9 +2,9 @@ class Content
   SECONDS_OF_DAY = 86400
   UPDATABLE = [:id,:title,:body,:created_at]
 
-  def self.delete_one(params)
+  def self.delete_one(params,table_name)
     idstr = params["id"]
-    ConnectDb.get_client.query("DELETE FROM #{@table_name} WHERE id=#{idstr}")
+    ConnectDb.get_client.query("DELETE FROM #{table_name} WHERE id=#{idstr}")
   end
 
   def initialize
@@ -32,5 +32,19 @@ class Content
     end
     self
   end
+
+  def check_all_valid?
+    if @message == []
+      true
+    else
+      @error_message = @message.join('<br>')
+      false
+    end
+  end
+
+  def body_empty?
+    body == ""
+  end
+  
 end
 
