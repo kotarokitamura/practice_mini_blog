@@ -1,8 +1,10 @@
 # coding: utf-8
 require 'rubygems'
 require 'rspec'
+require 'mysql2'
 require File.expand_path(File.dirname(__FILE__) + "/../../models/blog.rb") 
 require File.expand_path(File.dirname(__FILE__) + "/../../models/comment.rb") 
+require File.expand_path(File.dirname(__FILE__) + "/../../models/connect_db.rb") 
 
 describe Blog do
   before do
@@ -81,6 +83,13 @@ describe Blog do
     it 'should retrun false when the article posted before over a day' do 
       @blog.created_at = Time.now - Blog::SECONDS_OF_DAY 
       @blog.should_not be_created_new
+    end 
+  end
+
+  context 'with select query request' do
+    it 'should be return not nil when select all blog contents' do
+      blog_contents = Blog.select_all_blogs 
+      blog_contents.should_not be_nil
     end 
   end
 end
