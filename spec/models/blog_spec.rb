@@ -2,6 +2,7 @@
 require 'rubygems'
 require 'rspec'
 require File.expand_path(File.dirname(__FILE__) + "/../../models/blog.rb") 
+require File.expand_path(File.dirname(__FILE__) + "/../../models/comment.rb") 
 
 describe Blog do
   before do
@@ -62,8 +63,7 @@ describe Blog do
     it "should return true when title has over #{Blog::BODY_MAX_LENGTH} charactors in Japanese" do
       @blog.body = "あ" * (Blog::BODY_MAX_LENGTH ) + "あ"
       @blog.title = "い"
-      @blog.should be_body_over_limit
-    end
+      @blog.should be_body_over_limit end
 
     it "should return false when title has under #{Blog::BODY_MAX_LENGTH} charactors in Japanese" do
       @blog.body = "あ" * (Blog::BODY_MAX_LENGTH ) 
@@ -73,15 +73,65 @@ describe Blog do
   end
 
   context 'whit posted within a day or not' do
-    it "should return true when the article posted within a day" do
+    it 'should return true when the article posted within a day' do
       @blog.created_at = Time.now
       @blog.should be_created_new
     end
     
-    it "should retrun false when the article posted before over a day" do 
+    it 'should retrun false when the article posted before over a day' do 
       @blog.created_at = Time.now - Blog::SECONDS_OF_DAY 
       @blog.should_not be_created_new
     end 
+  end
+end
+
+describe Comment do
+  before do 
+    @comment = Comment.new
+  end
+  
+  context 'with comment body has many pattern' do
+    it 'should be retrun true when body is empty' do 
+      @comment.body = ""
+      @comment.should be_body_empty 
+    end   
+    
+    it 'should be return false when body is not empty' do
+      @comment.body = "aaa"
+      @comment.should_not be_body_empty
+    end
+
+    it "should be return true when body has over #{Comment::BODY_MAX_LENGTH} in English" do
+      @comment.body = "a" * (Comment::BODY_MAX_LENGTH) + "a" 
+      @comment.should be_body_over_limit
+    end
+ 
+    it "should be return true when body has over #{Comment::BODY_MAX_LENGTH} in Japanese" do
+      @comment.body = "あ" * (Comment::BODY_MAX_LENGTH) + "あ"
+      @comment.should be_body_over_limit
+    end
+
+    it "should be return false when body has under #{Comment::BODY_MAX_LENGTH} in English" do
+      @comment.body = "a" * (Comment::BODY_MAX_LENGTH) 
+      @comment.should_not be_body_over_limit
+    end
+
+    it "should be return false when body has under #{Comment::BODY_MAX_LENGTH} in Japanese" do 
+      @comment.body = "あ" * (Comment::BODY_MAX_LENGTH) 
+      @comment.should_not be_body_over_limit
+    end
+  end 
+
+  context 'whit posted within a day or not' do
+    it 'should be return ture when the comment posted within a day' do 
+      @comment.created_at = Time.now
+      @comment.should be_created_new
+    end
+    
+    it 'should be return false when the comment posted before over a day' do 
+      @comment.created_at = Time.now - Comment::SECONDS_OF_DAY
+      @comment.should_not be_created_new
+    end
   end
 end
 

@@ -3,13 +3,13 @@ require File.dirname(__FILE__) + '/content.rb'
 class Blog < Content
   TITLE_MAX_LENGTH = 50
   BODY_MAX_LENGTH = 300
-
+  @table_name = 'blogs'
   #----------------------------
   # class methods
   #-----------------------------
   def self.select_blog(params)
     blogs = []
-    ConnectDb.get_client.query("SELECT * FROM blogs WHERE id='#{params[:id]}'").each do |row|
+    ConnectDb.get_client.query("SELECT * FROM #{@table_name} WHERE id='#{params[:id]}'").each do |row|
       blog = Blog.new
       blogs << blog.set_params({:id => row["id"], :title => row["title"], :body => row["body"]})
     end
@@ -18,21 +18,16 @@ class Blog < Content
 
   def self.select_all_blogs
     blogs = []
-    ConnectDb.get_client.query("SELECT * FROM blogs").each do |row|
+    ConnectDb.get_client.query("SELECT * FROM #{@table_name}").each do |row|
       blog = Blog.new
       blogs << blog.set_params({:id => row["id"], :title => row["title"], :body => row["body"], :created_at => row["created_at"]})
     end
     blogs
   end
 
-
   #-----------------------------
   # instance methods
   #-----------------------------
-  
-  attr_accessor :id,:title,:body,:created_at
-  attr_reader :error_message
-
   def save_valid?  
     @query_info = if new_record?
       "INSERT INTO blogs(title,body,created_at,updated_at) VALUES ('#{title}','#{body}','#{Time.now}','#{Time.now}')"
