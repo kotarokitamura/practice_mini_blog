@@ -1,13 +1,13 @@
 class Content
   SECONDS_OF_DAY = 86400
-  UPDATABLE = [:id,:title,:body,:created_at]
+  UPDATABLE = [:id,:title,:body,:created_at,:blog_id]
 
   def self.delete_one(params)
     idstr = params["id"]
     ConnectDb.get_client.query("DELETE FROM #{@table_name} WHERE id=#{idstr}")
   end
 
-  attr_accessor :id, :title, :body, :created_at
+  attr_accessor :id, :title, :body, :created_at, :blog_id
   attr_reader :error_message
 
   def initialize

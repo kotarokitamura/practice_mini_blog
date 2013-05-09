@@ -96,9 +96,10 @@ describe Blog do
       @client.query("create table blogs (id INT UNSIGNED NOT NULL AUTO_INCREMENT,title TEXT, body TEXT, created_at DATETIME, updated_at DATETIME,primary key(id));") 
       fixture_data = [['title1','body1'],['title2','body2'],['title3','body3']]
       @blog_data = []
-      fixture_data.each do |title,body|
-        @client.query("INSERT INTO blogs (title,body,created_at,updated_at) VALUES ('#{title}','#{body}','#{Time.now}','#{Time.now}')")
-        @blog_data << {:title => title, :body => body}
+      fixture_data.each do |blog|
+        @client.query("INSERT INTO blogs (title,body,created_at,updated_at) VALUES ('title','body','#{Time.now}','#{Time.now}')")
+
+        @blog_data << {:title => "#{["title"]}", :body => "#{["body"]}"}
       end
             
     end

@@ -7,7 +7,7 @@ class Comment < Content
     comments = []
     ConnectDb.get_client.query("SELECT * FROM #{@table_name} WHERE blog_id='#{params[:id]}'").each do |row|
       comment = Comment.new
-      comments << comment.set_params({:id => row["id"], :body => row["body"], :created_at => row["created_at"]})
+      comments << comment.set_params({:id => row["id"] ,:blog_id => row["blog_id"],:body => row["body"], :created_at => row["created_at"]})
     end
     comments
   end
