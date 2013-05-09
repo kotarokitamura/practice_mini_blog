@@ -6,7 +6,9 @@ require File.expand_path(File.dirname(__FILE__) + "/../../models/blog.rb")
 require File.expand_path(File.dirname(__FILE__) + "/../../models/comment.rb") 
 require File.expand_path(File.dirname(__FILE__) + "/../../models/connect_db.rb") 
 
+
 describe Blog do
+ FIRST_BLOG_ID = 1
   before do
     @blog = Blog.new
   end
@@ -86,19 +88,69 @@ describe Blog do
     end 
   end
 
-  context 'with select query request' do
-    it 'should be return not nil when select all blog contents' do
-      blog_contents = Blog.select_all_blogs 
-      blog_contents.should_not be_nil
+  context 'with blogs query' do
+    before do 
+      #create test table
+      @client = ConnectDb.get_client
+      @client.query("create table blogs (id INT UNSIGNED NOT NULL AUTO_INCREMENT,title TEXT, body TEXT, created_at DATETIME, updated_at DATETIME,primary key(id));") 
+      #insert fixture data
+      fixture_data = [['title1','body1'],['title2','body2'],['title3','body3']]
+      @blog_data = []
+      fixture_data.each do |title,body|
+        @client.query("INSERT INTO blogs (title,body,created_at,updated_at) VALUES ('#{title}','#{body}','#{Time.now}','#{Time.now}')")
+        @blog_data << {:title => title, :body => body}
+      end
+            
+    end
+
+    it 'should select_all_blogs and match all fixture data'  do 
+      all_blogs = Blog.select_all_blogs
+      all_blogs.each_with_index do |blog,count|
+        blog.title.should == @blog_data[count][:title]
+        blog.body.should == @blog_data[count][:body]
+      end 
+    end
+ 
+    it 'should select_blog one and match it' do 
+      blog = Blog.select_blog({:id => FIRST_BLOG_ID})
+      blog.title.should == @blog_data.first[:title]
+      blog.body.should == @blog_data.first[:body]
+    end
+
+    it 'should insert new blog' do 
+      @blog.title = 'title4'
+      @blog.body = 'body4'
+      @blog.should be_save_valid
+      last_blog = Blog.select_all_blogs.last
+      last_blog.title.should == @blog.title
+      last_blog.body.should == @blog.body
+    end
+
+    it 'should update blog information' do 
+      @blog.id = FIRST_BLOG_ID
+      @blog.title = 'hogehoge'
+      @blog.body = 'foofoo'
+      @blog.should be_save_valid
+      first_blog = Blog.select_blog({:id => FIRST_BLOG_ID})
+      first_blog.title.should == @blog.title 
+      first_blog.body.should == @blog.body
     end 
+
+    it 'should delete first blog' do
+      Blog.delete_one({"_method"=>"DELETE", "splat"=>[], "captures"=>["#{FIRST_BLOG_ID}"], "id"=>"#{FIRST_BLOG_ID}"})
+      Blog.select_blog({:id => FIRST_BLOG_ID}).should be_nil
+    end
+  
+    after do
+      @client.query("drop table blogs")
+    end
   end
 end
 
 describe Comment do
   before do 
     @comment = Comment.new
-  end
-  
+  end 
   context 'with comment body has many pattern' do
     it 'should be retrun true when body is empty' do 
       @comment.body = ""

@@ -3,3 +3,9 @@ development:
   host: localhost 
   username: root
   password: 
+
+test:
+  database: mblog_test
+  host: localhost
+  username: root
+  password:
