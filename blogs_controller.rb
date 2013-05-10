@@ -1,12 +1,13 @@
 class BlogsController < Sinatra::Base
   enable :method_override
+
   get '/blogs' do
-    @blogs = Blog.select_all_blogs
+    @blogs = Blog.select_all_contents
     haml :index
   end
 
   get '/blogs/:id' do
-    set_blog
+    set_blog(params[:id])
     set_comments
     haml :show
   end
@@ -17,12 +18,12 @@ class BlogsController < Sinatra::Base
   end
 
   get '/blogs/:id/edit' do
-    set_blog
+    set_blog(params[:id])
     haml :edit
   end
 
   put '/blogs/:id' do
-    set_blog
+    set_blog(params[:id])
     @blog.set_params(params)
     if @blog.save_valid?
       redirect '/blogs'
@@ -41,13 +42,13 @@ class BlogsController < Sinatra::Base
     end
   end
 
-  post '/blogs/:id/comments' do
+  post '/blogs/:blog_id/comments' do
     @comment = Comment.new
     @comment.set_params(params)
     if @comment.save_valid?
-      redirect '/blogs'
-    else 
-      set_blog
+      redirect "/blogs/#{params[:blog_id]}"
+    else
+      set_blog(params[:blog_id])
       set_comments
       haml :show
     end
@@ -55,33 +56,35 @@ class BlogsController < Sinatra::Base
 
   delete '/blogs/:id' do
     p params
-    Blog.delete_one(params)
+    Blog.delete_one(params[:id])
     redirect '/blogs'
   end
 
-  delete '/blogs/:id/comments/:id' do
-    Comment.delete_one(params)
-    redirect '/blogs'
+  delete '/blogs/:blog_id/comments/:id' do
+    Comment.delete_one(params[:id])
+    redirect "/blogs/#{params[:blog_id]}"
   end
 
 
   helpers do
-    def blog_message(blog)
-      blog.created_new? ? "new" : ""
+    def message_info(obj)
+      return "" if obj.nil?
+      obj.created_new? ? "new" : ""
     end
-     
-    def comment_message(comment)
-      comment.created_new? ? "new" : ""
+
+    def show_error_message(obj)
+      return "" if obj.nil?
+      (obj.error_message || []).join("<br />")
     end
   end
 
 
   private
-  def set_blog
-    @blog = Blog.select_blog(params)
+  def set_blog(id_str)
+    @blog = Blog.select_one(id_str)
   end
 
   def set_comments
-    @comments = Comment.select_all_comments(params)
+    @comments = Comment.select_all_contents(@blog)
   end
 end

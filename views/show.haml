@@ -1,3 +1,6 @@
+%p{"style" => "color:red"}
+  #{show_error_message(@comment)}
+
 %div
   =@blog.title
 %div
@@ -13,8 +16,8 @@
   -@comments.each do |comment|
     %li
       #{comment.body}
-      %p
-        =comment_message(comment)
+      %span{"style" => "padding-left: 10px;color: red"}
+        =message_info(comment)
     %form{"action"=>"/blogs/#{@blog.id}/comments/#{comment.id}", "method" => "post"}
       %input{"type"=>"hidden","value"=>"DELETE","name"=>"_method"}
       %input{"type"=>"submit","value"=>"delete"}
@@ -24,7 +27,4 @@
     %textarea{"name" => "body"}
   %div
     %input{"type" => "submit", "value" => "submit"}
-
-%p
-  =@comment.error_message if  @comment!=nil
 

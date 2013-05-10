@@ -1,3 +1,6 @@
+%p{"style" => "color:red"}
+  =show_error_message(@blog)
+
 %form{"action" => "/blogs/#{@blog.id}", "method" => "post"}
   %input{"type"=>"hidden", "value" => "PUT", "name" => "_method"}
   %div
@@ -7,5 +10,3 @@
       =@blog.body
   %div
     %input{"type"=>"submit", "value"=>"submit"}
-%p
-  #{@blog.error_message}

@@ -1,53 +1,83 @@
 class Content
   SECONDS_OF_DAY = 86400
-  UPDATABLE = [:id,:title,:body,:created_at,:blog_id]
+  BODY_MAX_LENGTH = 300
 
-  def self.delete_one(params)
-    idstr = params["id"]
-    ConnectDb.get_client.query("DELETE FROM #{@table_name} WHERE id=#{idstr}")
+  attr_accessor :id, :body, :created_at, :error_message
+
+  #----------------------------
+  # class methods
+  #-----------------------------
+  def self.select_all_contents(parent=nil)
+    objs = []
+    query_str = "SELECT * FROM #{self.name.downcase}s"# self.name.downcase.pluralize /rails
+    query_str += " WHERE #{parent.class.name.downcase}_id=#{parent.id.to_s}" if parent
+    ConnectDb.get_client.query(query_str).each do |row|
+      obj = self.new
+      objs << obj.set_params({:id => row["id"], :title => row["title"], :body => row["body"], :created_at => row["created_at"]})
+    end
+    objs
   end
 
-  attr_accessor :id, :title, :body, :created_at, :blog_id
-  attr_reader :error_message
+  def self.select_one(id_str)
+    objs = []
+    ConnectDb.get_client.query("SELECT * FROM #{self.name.downcase}s WHERE id=#{id_str}").each do |row|
+      obj = self.new
+      objs << obj.set_params({:id => row["id"], :title => row["title"], :body => row["body"]})
+    end
+    objs.first
+  end
 
-  def initialize
-    @message = []
+  def self.delete_one(id_str)
+    ConnectDb.get_client.query("DELETE FROM #{self.name.downcase}s WHERE id=#{id_str}")
+  end
+
+  #-----------------------------
+  # instance methods
+  #-----------------------------
+  def new_record?
+    self.id.nil?
   end
 
   def save_valid?
     if check_all_valid?
-      client = ConnectDb.get_client
-      client.query(@query_info)
+      ConnectDb.get_client.query(new_record? ? save_query_string : update_query_string)
       true
-    else 
+    else
       false
-    end 
+    end
   end
-   
+
   def created_new?
     Time.now - created_at < SECONDS_OF_DAY
   end
 
   def set_params(params)
     params.each do |key,val|
-      next unless UPDATABLE.include?(key.to_sym)
+      next if val.nil?
+      next unless self.class::UPDATABLE.include?(key.to_sym)
       self.send(key.to_s+"=",val)
     end
     self
   end
 
   def check_all_valid?
-    if @message == []
-      true
-    else
-      @error_message = @message.join('<br>')
-      false
-    end
+    self.error_message = []
+    check_valid_and_set_error_message
+    self.error_message << "word count of title should be under #{self.class::BODY_MAX_LENGTH} capitals" if body_over_limit?
+    self.error_message << "body should not be empty" if body_empty?
+    self.error_message == []
   end
 
   def body_empty?
     body == ""
   end
-  
+
+  def body_over_limit?
+    body.length > self.class::BODY_MAX_LENGTH
+  end
+
+  def check_valid_and_set_error_message
+  end
+
 end
 

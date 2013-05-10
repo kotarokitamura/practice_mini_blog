@@ -3,5 +3,5 @@
     %li
       %a{"href" => "/blogs/#{blog.id}"}
         =blog.title
-      %p 
-        =blog_message(blog)
+      %span{"style" => "padding-left: 10px;color: red"}
+        =message_info(blog)

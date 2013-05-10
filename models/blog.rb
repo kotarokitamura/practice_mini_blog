@@ -1,52 +1,23 @@
 # create table blogs (id INT UNSIGNED NOT NULL AUTO_INCREMENT,title TEXT, body TEXT, created_at DATETIME, updated_at DATETIME,primary key(id));
-require File.dirname(__FILE__) + '/content.rb'
 class Blog < Content
   TITLE_MAX_LENGTH = 50
-  BODY_MAX_LENGTH = 300
-  @table_name = 'blogs'
-  #----------------------------
-  # class methods
-  #-----------------------------
-  def self.select_blog(params)
-    blogs = []
-    ConnectDb.get_client.query("SELECT * FROM #{@table_name} WHERE id='#{params[:id]}'").each do |row|
-      blog = Blog.new
-      blogs << blog.set_params({:id => row["id"], :title => row["title"], :body => row["body"]})
-    end
-    blogs.first
-  end
-
-  def self.select_all_blogs
-    blogs = []
-    ConnectDb.get_client.query("SELECT * FROM #{@table_name}").each do |row|
-      blog = Blog.new
-      blogs << blog.set_params({:id => row["id"], :title => row["title"], :body => row["body"], :created_at => row["created_at"]})
-    end
-    blogs
-  end
+  attr_accessor :title
+  UPDATABLE = [:id, :title, :body, :created_at, :updated_at]
 
   #-----------------------------
   # instance methods
   #-----------------------------
-  def save_valid?  
-    @query_info = if new_record?
-      "INSERT INTO blogs(title,body,created_at,updated_at) VALUES ('#{title}','#{body}','#{Time.now}','#{Time.now}')"
-    else
-      "UPDATE blogs SET title='#{title}',body='#{body}',updated_at='#{Time.now}'  WHERE id=#{id}" 
-    end
-    super
+  def save_query_string
+    "INSERT INTO blogs(title,body,created_at,updated_at) VALUES ('#{title}','#{body}','#{Time.now}','#{Time.now}')"
   end
 
-  def new_record?
-    self.id.nil?
+  def update_query_string
+    "UPDATE blogs SET title='#{title}',body='#{body}',updated_at='#{Time.now}'  WHERE id=#{id}"
   end
 
-  def check_all_valid?
-    @message << "title should not be blank." if title_empty?
-    @message << "body should not be empty" if body_empty?
-    @message << "word count of title should be under #{TITLE_MAX_LENGTH} capitals" if title_over_limit? 
-    @message << "word count of title should be under #{BODY_MAX_LENGTH} capitals" if body_over_limit? 
-    super
+  def check_valid_and_set_error_message
+    self.error_message << "title should not be blank." if title_empty?
+    self.error_message << "word count of title should be under #{TITLE_MAX_LENGTH} capitals" if title_over_limit?
   end
 
   def title_empty?
@@ -55,10 +26,6 @@ class Blog < Content
 
   def title_over_limit?
     title.length > TITLE_MAX_LENGTH
-  end
-
-  def body_over_limit?
-    body.length > BODY_MAX_LENGTH
   end
 
 end
