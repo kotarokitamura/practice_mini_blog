@@ -3,11 +3,10 @@ require 'rubygems'
 require 'rspec'
 require 'mysql2'
 require 'yaml'
+require File.expand_path(File.dirname(__FILE__) + "/../../models/content.rb")
 require File.expand_path(File.dirname(__FILE__) + "/../../models/blog.rb") 
 require File.expand_path(File.dirname(__FILE__) + "/../../models/comment.rb") 
 require File.expand_path(File.dirname(__FILE__) + "/../../models/connect_db.rb") 
-
-
 
 describe Blog do
  FIRST_BLOG_ID = 1
@@ -104,7 +103,7 @@ describe Blog do
     end
 
     it 'should select_all_blogs and match all fixture data'  do 
-      all_blogs = Blog.select_all_blogs
+      all_blogs = Blog.select_all_contents
       all_blogs.each_with_index do |blog,count|
         blog.title.should == @blog_data[count][:title]
         blog.body.should == @blog_data[count][:body]
@@ -112,7 +111,7 @@ describe Blog do
     end
  
     it 'should select_blog one and match it' do 
-      blog = Blog.select_blog({:id => FIRST_BLOG_ID})
+      blog = Blog.select_one(FIRST_BLOG_ID)
       blog.title.should == @blog_data.first[:title]
       blog.body.should == @blog_data.first[:body]
     end
@@ -121,7 +120,7 @@ describe Blog do
       @blog.title = 'title4'
       @blog.body = 'body4'
       @blog.should be_save_valid
-      last_blog = Blog.select_all_blogs.last
+      last_blog = Blog.select_all_contents.last
       last_blog.title.should == @blog.title
       last_blog.body.should == @blog.body
     end
@@ -131,14 +130,14 @@ describe Blog do
       @blog.title = 'hogehoge'
       @blog.body = 'foofoo'
       @blog.should be_save_valid
-      first_blog = Blog.select_blog({:id => FIRST_BLOG_ID})
+      first_blog = Blog.select_one(FIRST_BLOG_ID)
       first_blog.title.should == @blog.title 
       first_blog.body.should == @blog.body
     end 
 
     it 'should delete first blog' do
-      Blog.delete_one({"id"=>"#{FIRST_BLOG_ID}"})
-      Blog.select_blog({:id => FIRST_BLOG_ID}).should be_nil
+      Blog.delete_one(FIRST_BLOG_ID)
+      Blog.select_one(FIRST_BLOG_ID).should be_nil
     end
   
     after do
@@ -200,6 +199,8 @@ describe Comment do
 
   context 'with comments query' do
     before do
+      @blog = Blog.new
+      @blog.id = BLOG_ID_OF_COMMENT
       @client = ConnectDb.get_client
       @client.query("create table comments (id INT UNSIGNED NOT NULL AUTO_INCREMENT,blog_id INT, body TEXT, created_at DATETIME, primary key(id))")
       fixture_data = [['comment1-1','1'],['comment2-1','2'],['comment1-2','1']]
@@ -211,15 +212,14 @@ describe Comment do
     end
     
     it 'should get all comments same blog_id' do 
-      comments = Comment.select_all_comments({:id =>BLOG_ID_OF_COMMENT}) 
-      comments.each_with_index do |comment,count|
+      Comment.select_all_contents(@blog) do |comment| 
         comment.blog_id.should  == BLOG_ID_OF_COMMENT 
       end 
     end
 
     it 'should delete comment' do 
-      Comment.delete_one({"id"=>"#{FIRST_COMMENT_ID}"})
-      Comment.select_all_comments({:id => FIRST_COMMENT_ID}).each do |comment|
+      Comment.delete_one(FIRST_COMMENT_ID)
+      Comment.select_all_contents(@blog).each do |comment|
         comment.id.should_not == FIRST_COMMENT_ID
       end
     end
