@@ -1,4 +1,5 @@
 # coding: utf-8
+ENV['RACK_ENV'] = "test"
 require 'rubygems'
 require 'rspec'
 require 'mysql2'
@@ -7,6 +8,7 @@ require File.expand_path(File.dirname(__FILE__) + "/../../models/content.rb")
 require File.expand_path(File.dirname(__FILE__) + "/../../models/blog.rb") 
 require File.expand_path(File.dirname(__FILE__) + "/../../models/comment.rb") 
 require File.expand_path(File.dirname(__FILE__) + "/../../models/connect_db.rb") 
+
 
 describe Blog do
  FIRST_BLOG_ID = 1
