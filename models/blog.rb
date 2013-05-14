@@ -1,9 +1,12 @@
 # create table blogs (id INT UNSIGNED NOT NULL AUTO_INCREMENT,title TEXT, body TEXT, created_at DATETIME, updated_at DATETIME,primary key(id));
+require File.expand_path(File.dirname(__FILE__) + "/../lib/paginate.rb")
 class Blog < Content
   TITLE_MAX_LENGTH = 50
   attr_accessor :title
   UPDATABLE = [:id, :title, :body, :created_at, :updated_at]
-
+  extend Paginate
+  self.contents_unit = 3
+  
   #-----------------------------
   # instance methods
   #-----------------------------

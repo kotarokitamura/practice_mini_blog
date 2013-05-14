@@ -5,3 +5,5 @@
         =blog.title
       %span{"style" => "padding-left: 10px;color: red"}
         =message_info(blog)
+  %a{"href" => "/blogs/page/#{previous_page(params[:id])}"}=check_previous_page(@blogs)
+  %a{"href" => "/blogs/page/#{next_page(params[:id])}"}=check_next_page(@blogs)

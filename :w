@@ -2,6 +2,7 @@ class BlogsController < Sinatra::Base
   enable :method_override
 
   get '/blogs' do
+    #@blogs = Blog.select_all_contents
     @blogs = Blog.content_paginate()
     haml :index
   end
@@ -15,6 +16,7 @@ class BlogsController < Sinatra::Base
   get '/blogs/page/:id' do
     @blogs = Blog.content_paginate(params[:id])
     haml :index
+
   end
 
   get '/blogs/new/' do
@@ -72,7 +74,6 @@ class BlogsController < Sinatra::Base
 
 
   helpers do
-    ONE_PAGE = 1
     def message_info(obj)
       return "" if obj.nil?
       obj.created_new? ? "new" : ""
@@ -83,36 +84,17 @@ class BlogsController < Sinatra::Base
       (obj.error_message || []).join("<br />")
     end
 
-    def check_previous_page(contents)
-      table_name =  contents.first.class.name.downcase+"s"
-      first_content =  ConnectDb.get_client.query("SELECT * FROM #{table_name} where id=(select min(id) from #{table_name})").first
-      if contents.first.id != first_content["id"]
-        "previous"
-      else
-         ""
-      end
+    def check_previous_page(content)
+      last_content =  ConnectDb.get_client.query("SELECT * FROM #{content.class.name.downcase}s where id=(select max(id) from #{content.class.name.downcase}s)")
+      puts last_content
+      content.id == last_content.id
+      
     end
     
-    def check_next_page(contents)
-      table_name =  contents.last.class.name.downcase+"s"
-      last_content =  ConnectDb.get_client.query("SELECT * FROM #{table_name} where id=(select max(id) from #{table_name})").first
-      @next_page = 1
-      if contents.last.id != last_content["id"]
-        "next"
-      else
-         ""
-      end
+    def check_next_page
     end
-
-    def previous_page(current_page)
-      current_page.to_i - ONE_PAGE
-    end
-  
-    def next_page(current_page)
-      page = current_page.to_i + ONE_PAGE
-      page == ONE_PAGE ? page + ONE_PAGE : page
-    end 
   end
+
 
   private
   def set_blog(id_str)
