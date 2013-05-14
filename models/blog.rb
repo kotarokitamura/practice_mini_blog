@@ -2,9 +2,9 @@
 require File.expand_path(File.dirname(__FILE__) + "/../lib/paginate.rb")
 class Blog < Content
   TITLE_MAX_LENGTH = 50
-  attr_accessor :title
+  attr_accessor :title,:updated_at
   UPDATABLE = [:id, :title, :body, :created_at, :updated_at]
-  self.contents_unit = 5 
+  self.contents_unit = 10 
   self.sort_colomn = "updated_at"
   
   #-----------------------------

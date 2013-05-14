@@ -84,7 +84,6 @@ class BlogsController < Sinatra::Base
     end
 
     def check_previous_page(content)
-      content=content
       content.class.previous_page?(content) ? "previous" : ""
     end
     
