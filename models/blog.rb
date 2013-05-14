@@ -4,8 +4,8 @@ class Blog < Content
   TITLE_MAX_LENGTH = 50
   attr_accessor :title
   UPDATABLE = [:id, :title, :body, :created_at, :updated_at]
-  extend Paginate
-  self.contents_unit = 3
+  self.contents_unit = 5 
+  self.sort_colomn = "updated_at"
   
   #-----------------------------
   # instance methods

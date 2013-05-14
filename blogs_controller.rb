@@ -83,25 +83,13 @@ class BlogsController < Sinatra::Base
       (obj.error_message || []).join("<br />")
     end
 
-    def check_previous_page(contents)
-      table_name =  contents.first.class.name.downcase+"s"
-      first_content =  ConnectDb.get_client.query("SELECT * FROM #{table_name} where updated_at=(select max(updated_at) from #{table_name})").first
-      if contents.first.id != first_content["id"]
-        "previous"
-      else
-         ""
-      end
+    def check_previous_page(content)
+      content=content
+      content.class.previous_page?(content) ? "previous" : ""
     end
     
-    def check_next_page(contents)
-      table_name =  contents.last.class.name.downcase+"s"
-      last_content =  ConnectDb.get_client.query("SELECT * FROM #{table_name} where updated_at=(select min(updated_at) from #{table_name})").first
-      @next_page = 1
-      if contents.last.id != last_content["id"]
-        "next"
-      else
-         ""
-      end
+    def check_next_page(content)
+      content.class.next_page?(content) ? "next" : ""
     end
 
     def previous_page(current_page)

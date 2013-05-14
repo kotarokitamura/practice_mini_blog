@@ -1,9 +1,9 @@
+require File.expand_path(File.dirname(__FILE__) + "/../lib/paginate.rb")  
 class Content
   SECONDS_OF_DAY = 86400
   BODY_MAX_LENGTH = 300
-
   attr_accessor :id, :body, :created_at, :error_message
-
+  extend Paginate
   #----------------------------
   # class methods
   #-----------------------------
