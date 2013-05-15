@@ -1,11 +1,17 @@
 module Paginate
   require File.expand_path(File.dirname(__FILE__) + '/contents_unit.rb')
   include PaginateCondition 
+  FIRST_CONTENT = 0
   FIRST_CONTENT_ID = 1
   attr_accessor :page_number 
   def content_paginate(page_number=FIRST_CONTENT_ID)
     contents_offset = self.contents_unit * page_number.to_i - self.contents_unit
     get_content("SELECT * FROM #{self.name.downcase}s ORDER BY #{self.sort_colomn} DESC LIMIT #{self.contents_unit} OFFSET #{contents_offset}")
+  end
+
+  def comment_paginate(parent)
+    contents_offset = self.contents_unit
+    get_content("SELECT * FROM #{self.name.downcase}s WHERE #{parent.class.name}_id=#{parent.id.to_s} ORDER BY #{self.sort_colomn} DESC LIMIT #{self.contents_unit} OFFSET #{FIRST_CONTENT}")
   end
 
   def first_content

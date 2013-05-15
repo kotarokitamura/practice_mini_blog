@@ -115,6 +115,7 @@ class BlogsController < Sinatra::Base
   end
 
   def set_comments
-    @comments = Comment.select_all_contents(@blog)
+    #@comments = Comment.select_all_contents(@blog)
+    @comments = Comment.comment_paginate(@blog)
   end
 end
