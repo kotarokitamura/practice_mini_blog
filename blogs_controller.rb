@@ -91,12 +91,12 @@ class BlogsController < Sinatra::Base
       !content.class.next_content(content).nil? ? "next" : ""
     end
 
-    def previous_page(current_page)
-      page = current_page.to_i + ONE_PAGE
+    def previous_page_id(current_page_id)
+      page = current_page_id.to_i + ONE_PAGE
       page == ONE_PAGE ? page + ONE_PAGE : page
     end
   
-    def next_page(current_page)
+    def next_page_id(current_page)
       current_page.to_i - ONE_PAGE
     end 
 
@@ -115,7 +115,6 @@ class BlogsController < Sinatra::Base
   end
 
   def set_comments
-    #@comments = Comment.select_all_contents(@blog)
-    @comments = Comment.comment_paginate(@blog)
+    @comments = Comment.content_limited(@blog)
   end
 end

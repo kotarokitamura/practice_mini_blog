@@ -1,27 +1,25 @@
 module Paginate
   require File.expand_path(File.dirname(__FILE__) + '/contents_unit.rb')
   include PaginateCondition 
-  FIRST_CONTENT = 0
-  FIRST_CONTENT_ID = 1
+  FIRST_CONTENT = 1
   attr_accessor :page_number 
-  def content_paginate(page_number=FIRST_CONTENT_ID)
+  def content_paginate(page_number=FIRST_CONTENT)
     contents_offset = self.contents_unit * page_number.to_i - self.contents_unit
     get_content("SELECT * FROM #{self.name.downcase}s ORDER BY #{self.sort_colomn} DESC LIMIT #{self.contents_unit} OFFSET #{contents_offset}")
   end
 
-  def comment_paginate(parent)
-    contents_offset = self.contents_unit
-    get_content("SELECT * FROM #{self.name.downcase}s WHERE #{parent.class.name}_id=#{parent.id.to_s} ORDER BY #{self.sort_colomn} DESC LIMIT #{self.contents_unit} OFFSET #{FIRST_CONTENT}")
+  def content_limited(content)
+    get_content("SELECT * FROM #{self.name.downcase}s WHERE #{content.class.name}_id=#{content.id.to_s} ORDER BY #{self.sort_colomn} DESC LIMIT #{self.contents_unit}")
   end
 
   def previous_content(content)
     current_data  = content.updated_at 
-    get_content("SELECT * FROM #{self.name.downcase}s WHERE #{self.sort_colomn} < '#{current_data}' ORDER BY #{self.sort_colomn} DESC LIMIT 1").first
+    get_content("SELECT * FROM #{self.name.downcase}s WHERE #{self.sort_colomn} < '#{current_data}' ORDER BY #{self.sort_colomn} DESC LIMIT #{FIRST_CONTENT}").first
   end
 
   def next_content(content)
     current_data = content.updated_at
-    get_content("SELECT * FROM #{self.name.downcase}s WHERE #{self.sort_colomn} > '#{current_data}' ORDER BY #{self.sort_colomn} LIMIT 1").first
+    get_content("SELECT * FROM #{self.name.downcase}s WHERE #{self.sort_colomn} > '#{current_data}' ORDER BY #{self.sort_colomn} LIMIT #{FIRST_CONTENT}").first
   end
 
   def get_content(query_str)
