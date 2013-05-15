@@ -14,20 +14,12 @@ module Paginate
     get_content("SELECT * FROM #{self.name.downcase}s WHERE #{parent.class.name}_id=#{parent.id.to_s} ORDER BY #{self.sort_colomn} DESC LIMIT #{self.contents_unit} OFFSET #{FIRST_CONTENT}")
   end
 
-  def first_content
-     get_content("SELECT * FROM #{self.name.downcase}s WHERE #{self.sort_colomn}=(SELECT MAX(#{self.sort_colomn}) FROM #{self.name.downcase}s)").first
+  def previous_content(content)
+    current_data  = content.updated_at 
+    get_content("SELECT * FROM #{self.name.downcase}s WHERE #{self.sort_colomn} < '#{current_data}' ORDER BY #{self.sort_colomn} DESC LIMIT 1").first
   end
 
-  def last_content
-     get_content("SELECT * FROM #{self.name.downcase}s WHERE #{self.sort_colomn}=(SELECT MIN(#{self.sort_colomn}) FROM #{self.name.downcase}s)").first
-  end
-
-  def previous_show_page(content)
-    current_data = self.sort_colomn
-    get_content("SELECT * FROM #{self.name.downcase}s WHERE #{self.sort_colomn} < '#{content.updated_at}' ORDER BY #{self.sort_colomn} DESC LIMIT 1").first
-  end
-
-  def next_show_page(content)
+  def next_content(content)
     current_data = content.updated_at
     get_content("SELECT * FROM #{self.name.downcase}s WHERE #{self.sort_colomn} > '#{current_data}' ORDER BY #{self.sort_colomn} LIMIT 1").first
   end

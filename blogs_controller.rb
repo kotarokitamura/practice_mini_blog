@@ -84,11 +84,11 @@ class BlogsController < Sinatra::Base
     end
 
     def check_previous_page(content)
-      !content.class.previous_show_page(content).nil? ? "previous" : ""
+      !content.class.previous_content(content).nil? ? "previous" : ""
     end
     
     def check_next_page(content)
-      !content.class.next_show_page(content).nil? ? "next" : ""
+      !content.class.next_content(content).nil? ? "next" : ""
     end
 
     def previous_page(current_page)
@@ -100,12 +100,12 @@ class BlogsController < Sinatra::Base
       current_page.to_i - ONE_PAGE
     end 
 
-    def previous_show_page_id(content)
-      content.class.previous_show_page(content).id unless content.class.previous_show_page(content).nil?
+    def previous_content_id(content)
+      content.class.previous_content(content).id unless content.class.previous_content(content).nil?
     end
   
-    def next_show_page_id(content)
-      content.class.next_show_page(content).id unless content.class.next_show_page(content).nil?
+    def next_content_id(content)
+      content.class.next_content(content).id unless content.class.next_content(content).nil?
     end
   end
 
