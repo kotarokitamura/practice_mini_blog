@@ -28,5 +28,5 @@
   %div
     %input{"type" => "submit", "value" => "submit"}
 
-%a{"href" => "/blogs/#{previous_page(params[:id])}"}=check_previous_page(@blog)
-%a{"href" => "/blogs/#{next_page(params[:id])}"}=check_next_page(@blog)
+%a{"href" => "/blogs/#{next_show_page_id(@blog)}"}=check_next_show_page(@blog)
+%a{"href" => "/blogs/#{previous_show_page_id(@blog)}"}=check_previous_show_page(@blog)

@@ -22,7 +22,7 @@ class Content
     objs = []
     ConnectDb.get_client.query("SELECT * FROM #{self.name.downcase}s WHERE id=#{id_str}").each do |row|
       obj = self.new
-      objs << obj.set_params({:id => row["id"], :title => row["title"], :body => row["body"]})
+      objs << obj.set_params({:id => row["id"], :title => row["title"], :body => row["body"], :created_at => row["created_at"], :updated_at => row["updated_at"]})
     end
     objs.first
   end
