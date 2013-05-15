@@ -3,7 +3,7 @@ class Comment < Content
   BODY_MAX_LENGTH = 50
   attr_accessor :blog_id
   UPDATABLE = [:id, :blog_id, :body, :created_at]
-  self.contents_unit = 3 
+  self.contents_unit = 1000 
   self.sort_colomn = "created_at"
 
   #-----------------------------
