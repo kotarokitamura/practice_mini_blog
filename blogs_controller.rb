@@ -2,7 +2,7 @@ class BlogsController < Sinatra::Base
   enable :method_override
 
   get '/blogs' do
-    @blogs = Blog.content_paginate()
+    @blogs = Blog.content_paginate(params[:page])
     haml :index
   end
 
@@ -10,11 +10,6 @@ class BlogsController < Sinatra::Base
     set_blog(params[:id])
     set_comments
     haml :show
-  end
-
-  get '/blogs/page/:id' do
-    @blogs = Blog.content_paginate(params[:id])
-    haml :index
   end
 
   get '/blogs/new/' do

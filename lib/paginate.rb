@@ -3,7 +3,8 @@ module Paginate
   include PaginateCondition 
   FIRST_CONTENT = 1
 
-  def content_paginate(page_number=FIRST_CONTENT)
+  def content_paginate(page_number)
+    page_number = FIRST_CONTENT if page_number.nil?
     contents_offset = self.contents_unit * page_number.to_i - self.contents_unit
     get_content("SELECT * FROM #{self.name.downcase}s ORDER BY #{self.sort_colomn} DESC LIMIT #{self.contents_unit} OFFSET #{contents_offset}")
   end

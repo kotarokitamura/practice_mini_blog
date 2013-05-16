@@ -7,16 +7,6 @@ class Content
   #----------------------------
   # class methods
   #-----------------------------
-  def self.select_all_contents(parent=nil)
-    objs = []
-    query_str = "SELECT * FROM #{self.name.downcase}s"# self.name.downcase.pluralize /rails
-    query_str += " WHERE #{parent.class.name.downcase}_id=#{parent.id.to_s}" if parent
-    ConnectDb.get_client.query(query_str).each do |row|
-      obj = self.new
-      objs << obj.set_params({:id => row["id"], :title => row["title"], :body => row["body"], :created_at => row["created_at"],:updated_at => row["updated_at"]})
-    end
-    objs
-  end
 
   def self.select_one(id_str)
     objs = []
