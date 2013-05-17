@@ -78,30 +78,25 @@ class BlogsController < Sinatra::Base
       (obj.error_message || []).join("<br />")
     end
 
-    def check_previous_page(content)
-      !content.class.previous_content(content).nil? ? "previous" : ""
-    end
-    
-    def check_next_page(content)
-      !content.class.next_content(content).nil? ? "next" : ""
-    end
-
-    def previous_page_id(current_page_id)
-      page = current_page_id.to_i + ONE_PAGE
-      page == ONE_PAGE ? page + ONE_PAGE : page
-    end
-  
-    def next_page_id(current_page)
-      current_page.to_i - ONE_PAGE
+    def next_page_id(page_num)
+      page_num.to_i - ONE_PAGE
     end 
 
-    def previous_content_id(content)
-      content.class.previous_content(content).id unless content.class.previous_content(content).nil?
+    def next_message(page_num)    
+      page_num = ONE_PAGE if  page_num.nil?
+      page_num.to_i != ONE_PAGE ? "next" : ""
     end
-  
-    def next_content_id(content)
-      content.class.next_content(content).id unless content.class.next_content(content).nil?
+
+    def pre_page_id(page_num)
+      page_num = ONE_PAGE if  page_num.nil?
+      page_num.to_i + ONE_PAGE
     end
+
+    def previous_message(page_num)
+      page_num = ONE_PAGE if page_num.nil?
+      Blog.has_previous?(page_num) ? "previous" : "" 
+    end
+      
   end
 
   private

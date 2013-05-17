@@ -1,6 +1,4 @@
 module Paginate
-  #require File.expand_path(File.dirname(__FILE__) + '/contents_unit.rb')
-  #include PaginateCondition 
   FIRST_CONTENT = 1
 
   def content_paginate(page_number)
@@ -13,16 +11,6 @@ module Paginate
     get_content("SELECT * FROM #{self.name.downcase}s WHERE #{content.class.name}_id=#{content.id.to_s} ORDER BY #{self.sort_colomn} DESC LIMIT #{self.contents_unit}")
   end
 
-  def previous_content(content)
-    current_data  = content.updated_at 
-    get_content("SELECT * FROM #{self.name.downcase}s WHERE #{self.sort_colomn} < '#{current_data}' ORDER BY #{self.sort_colomn} DESC LIMIT #{FIRST_CONTENT}").first
-  end
-
-  def next_content(content)
-    current_data = content.updated_at
-    get_content("SELECT * FROM #{self.name.downcase}s WHERE #{self.sort_colomn} > '#{current_data}' ORDER BY #{self.sort_colomn} LIMIT #{FIRST_CONTENT}").first
-  end
-
   def get_content(query_str)
     objs = []
     ConnectDb.get_client.query(query_str).each do |row|
@@ -32,12 +20,13 @@ module Paginate
     objs
   end
 
-  #####
-  #
-  # method for settings
-  #
-  ####
+  def count_contents
+    ConnectDb.get_client.query("SELECT COUNT(*) FROM #{self.name.downcase}s").first["COUNT(*)"]
+  end
 
+  def has_previous?(page_num)
+    count_contents.to_i > page_num.to_i * self.contents_unit  
+  end
 
   def contents_unit=(limit)
     @contents_unit = limit.to_i
