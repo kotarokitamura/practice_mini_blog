@@ -8,7 +8,6 @@ class Comment < Content
   # instance methods
   #-----------------------------
   def self.select_all(content)
-    p content
     @query_str = Paginate.contents_limited(content)
     super
   end
