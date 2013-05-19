@@ -11,7 +11,6 @@ class Blog < Content
   
   def self.select_all(page_number)
     @query_str = Paginate.content_paginate(page_number)
-    p @query_str
     super
   end
 

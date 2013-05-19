@@ -96,7 +96,6 @@ class BlogsController < Sinatra::Base
       page_num = ONE_PAGE if page_num.nil?
       Paginate.has_previous?(page_num) ? "previous" : "" 
     end
-      
   end
 
   private

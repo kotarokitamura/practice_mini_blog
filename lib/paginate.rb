@@ -20,5 +20,4 @@ module Paginate
   def self.has_previous?(page_num)
     count_contents.to_i > page_num.to_i * BLOG_CONTENTS_UNIT  
   end
-
 end
