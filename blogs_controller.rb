@@ -2,13 +2,13 @@ class BlogsController < Sinatra::Base
   enable :method_override
 
   get '/blogs' do
-    @blogs = Blog.content_paginate(params[:page])
+    @blogs = Blog.select_all(params[:page])
     haml :index
   end
 
   get '/blogs/:id' do
     set_blog(params[:id])
-    set_comments
+    set_comments(params[:id])
     haml :show
   end
 
@@ -87,14 +87,14 @@ class BlogsController < Sinatra::Base
       page_num.to_i != ONE_PAGE ? "next" : ""
     end
 
-    def pre_page_id(page_num)
+    def previous_page_id(page_num)
       page_num = ONE_PAGE if  page_num.nil?
       page_num.to_i + ONE_PAGE
     end
 
     def previous_message(page_num)
       page_num = ONE_PAGE if page_num.nil?
-      Blog.has_previous?(page_num) ? "previous" : "" 
+      Paginate.has_previous?(page_num) ? "previous" : "" 
     end
       
   end
@@ -104,7 +104,7 @@ class BlogsController < Sinatra::Base
     @blog = Blog.select_one(id_str)
   end
 
-  def set_comments
-    @comments = Comment.content_limited(@blog)
+  def set_comments(id_str)
+    @comments = Comment.select_all(id_str)
   end
 end

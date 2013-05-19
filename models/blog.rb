@@ -4,12 +4,17 @@ class Blog < Content
   TITLE_MAX_LENGTH = 50
   attr_accessor :title,:updated_at
   UPDATABLE = [:id, :title, :body, :created_at, :updated_at]
-  self.contents_unit = 10 
-  self.sort_colomn = "updated_at"
   
   #-----------------------------
   # instance methods
   #-----------------------------
+  
+  def self.select_all(page_number)
+    @query_str = Paginate.content_paginate(page_number)
+    p @query_str
+    super
+  end
+
   def save_query_string
     "INSERT INTO blogs(title,body,created_at,updated_at) VALUES ('#{title}','#{body}','#{Time.now}','#{Time.now}')"
   end

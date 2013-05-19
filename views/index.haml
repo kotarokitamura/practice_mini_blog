@@ -7,4 +7,4 @@
         =message_info(blog)
   %a{"href" => "/blogs?page=#{next_page_id(params[:page])}"}=next_message(params[:page])
  
-  %a{"href" => "/blogs?page=#{pre_page_id(params[:page])}"}=previous_message(params[:page]) 
+  %a{"href" => "/blogs?page=#{previous_page_id(params[:page])}"}=previous_message(params[:page]) 

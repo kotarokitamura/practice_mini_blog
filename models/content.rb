@@ -3,13 +3,24 @@ class Content
   SECONDS_OF_DAY = 86400
   BODY_MAX_LENGTH = 300
   attr_accessor :id, :body, :created_at, :error_message
-  extend Paginate
+  include Paginate
   #----------------------------
   # class methods
   #-----------------------------
 
+  def self.select_all(page_number)
+    objs = [] 
+    #query_str = Paginate.content_paginate(page_number)
+    ConnectDb.get_client.query(@query_str).each do |row|
+      obj = self.new
+      objs << obj.set_params({:id => row["id"], :title => row["title"], :body => row["body"], :created_at => row["created_at"], :updated_at => row["updated_at"]})
+    end
+    objs
+  end
+
   def self.select_one(id_str)
     objs = []
+    query_str = Paginate.contents_limited(id_str)
     ConnectDb.get_client.query("SELECT * FROM #{self.name.downcase}s WHERE id=#{id_str}").each do |row|
       obj = self.new
       objs << obj.set_params({:id => row["id"], :title => row["title"], :body => row["body"], :created_at => row["created_at"], :updated_at => row["updated_at"]})
