@@ -8,11 +8,6 @@ class Blog < Content
   #-----------------------------
   # instance methods
   #-----------------------------
-  
-  def self.select_all(page_number)
-    @query_str = Paginate.content_paginate(page_number)
-    super
-  end
 
   def save_query_string
     "INSERT INTO blogs(title,body,created_at,updated_at) VALUES ('#{title}','#{body}','#{Time.now}','#{Time.now}')"

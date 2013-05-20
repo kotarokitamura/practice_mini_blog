@@ -107,7 +107,7 @@ describe Blog do
     end
 
     it 'should select_all_blogs and match all fixture data'  do 
-      all_blogs = Blog.select_all(PARAMS_ID)
+      all_blogs = Blog.contents_paginate(PARAMS_ID)
       all_blogs.each_with_index do |blog,count|
         blog.title.should == @blog_data[count][:title]
         blog.body.should == @blog_data[count][:body]
@@ -124,7 +124,7 @@ describe Blog do
       @blog.title = 'title4'
       @blog.body = 'body4'
       @blog.should be_save_valid
-      last_blog = Blog.select_all(PARAMS_ID).last
+      last_blog = Blog.contents_paginate(PARAMS_ID).last
       last_blog.title.should == @blog.title
       last_blog.body.should == @blog.body
     end
@@ -216,14 +216,14 @@ describe Comment do
     end
     
     it 'should get all comments same blog_id' do 
-      Comment.select_all(@blog.id) do |comment| 
+      Comment.contents_limited(@blog) do |comment| 
         comment.blog_id.should  == BLOG_ID_OF_COMMENT 
       end 
     end
 
     it 'should delete comment' do 
       Comment.delete_one(FIRST_COMMENT_ID)
-      Comment.select_all(@blog.id).each do |comment|
+      Comment.contents_limited(@blog).each do |comment|
         comment.id.should_not == FIRST_COMMENT_ID
       end
     end

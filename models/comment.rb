@@ -7,11 +7,6 @@ class Comment < Content
   #-----------------------------
   # instance methods
   #-----------------------------
-  def self.select_all(content)
-    @query_str = Paginate.contents_limited(content)
-    super
-  end
-
   def save_query_string
     "INSERT INTO comments(body,created_at,blog_id) VALUES ('#{body}','#{Time.now}','#{blog_id}')"
   end
