@@ -8,25 +8,17 @@ class Content
   # class methods
   #-----------------------------
 
-  def self.select_all(page_number)
-    get_contents(@query_str)
-  end
-
   def self.select_one(id_str)
-    get_contents("SELECT * FROM #{self.name.downcase}s WHERE id=#{id_str}").first
+    objs = []
+    ConnectDb.get_client.query("SELECT * FROM #{self.name.downcase}s WHERE id=#{id_str}").each do |row|
+      obj = self.new
+      objs << obj.set_params({:id => row["id"], :title => row["title"], :body => row["body"], :created_at => row["created_at"], :updated_at => row["updated_at"]})
+    end
+    objs.first
   end
 
   def self.delete_one(id_str)
     ConnectDb.get_client.query("DELETE FROM #{self.name.downcase}s WHERE id=#{id_str}")
-  end
-
-  def self.get_contents(query_str)
-    objs = []
-    ConnectDb.get_client.query(query_str).each do |row|
-      obj = self.new
-      objs << obj.set_params({:id => row["id"], :title => row["title"], :body => row["body"], :created_at => row["created_at"], :updated_at => row["updated_at"]})
-    end
-    objs 
   end
   #-----------------------------
   # instance methods
