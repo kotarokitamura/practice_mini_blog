@@ -45,14 +45,14 @@ describe Blog do
 
 
     it "should return true when title has over #{Blog::BODY_MAX_LENGTH} charactors in English" do
-      @blog.body = "a" * (Blog::BODY_MAX_LENGTH ) + "a"
       @blog.title = "bbb"
+      @blog.body = "a" * (Blog::BODY_MAX_LENGTH ) + "a"
       @blog.should be_body_over_limit
     end
 
     it "should return false when title has under #{Blog::BODY_MAX_LENGTH} charactors in English" do
-      @blog.body = "a" * (Blog::BODY_MAX_LENGTH ) 
       @blog.title = "bbb"
+      @blog.body = "a" * (Blog::BODY_MAX_LENGTH ) 
       @blog.should_not be_body_over_limit
     end
 
@@ -70,13 +70,13 @@ describe Blog do
 
 
     it "should return true when title has over #{Blog::BODY_MAX_LENGTH} charactors in Japanese" do
-      @blog.body = "あ" * (Blog::BODY_MAX_LENGTH ) + "あ"
       @blog.title = "い"
+      @blog.body = "あ" * (Blog::BODY_MAX_LENGTH ) + "あ"
       @blog.should be_body_over_limit end
 
     it "should return false when title has under #{Blog::BODY_MAX_LENGTH} charactors in Japanese" do
-      @blog.body = "あ" * (Blog::BODY_MAX_LENGTH ) 
       @blog.title = "い"
+      @blog.body = "あ" * (Blog::BODY_MAX_LENGTH ) 
       @blog.should_not be_body_over_limit
     end
   end

@@ -42,12 +42,11 @@ module Paginate
     end 
  
     def sort_colomn=(value)
-      @sort_colomn = value
+      @sort_colomn = value.to_s
     end
  
     def sort_colomn
       @sort_colomn
     end
-
   end
 end
