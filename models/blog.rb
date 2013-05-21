@@ -4,7 +4,8 @@ class Blog < Content
   TITLE_MAX_LENGTH = 50
   attr_accessor :title,:updated_at
   UPDATABLE = [:id, :title, :body, :created_at, :updated_at]
-  
+  self.contents_unit = 10 
+  self.sort_colomn = 'updated_at' 
   #-----------------------------
   # instance methods
   #-----------------------------

@@ -1,7 +1,5 @@
 module Paginate
   FIRST_CONTENT = 1
-  BLOG_CONTENTS_UNIT = 10
-  COMMENT_CONTENTS_UNIT = 1000
 
   def self.included(base)
     base.extend ClassMethod
@@ -10,12 +8,12 @@ module Paginate
   module ClassMethod
     def contents_paginate(page_number)
       page_number = FIRST_CONTENT if page_number.nil?
-      contents_offset = BLOG_CONTENTS_UNIT * page_number.to_i - BLOG_CONTENTS_UNIT 
-      get_contents("SELECT * FROM blogs ORDER BY updated_at DESC LIMIT #{BLOG_CONTENTS_UNIT}  OFFSET #{contents_offset}")
+      contents_offset = self.contents_unit * page_number.to_i - self.contents_unit 
+      get_contents("SELECT * FROM #{self.name.downcase}s ORDER BY #{self.sort_colomn} DESC LIMIT #{self.contents_unit}  OFFSET #{contents_offset}")
     end
     
     def contents_limited(blog)
-      get_contents("SELECT * FROM comments WHERE blog_id=#{blog.id} ORDER BY created_at DESC LIMIT #{COMMENT_CONTENTS_UNIT}")
+      get_contents("SELECT * FROM #{self.name.downcase}s WHERE blog_id=#{blog.id} ORDER BY #{self.sort_colomn} DESC LIMIT #{self.contents_unit}")
     end
 
     def get_contents(query_str)
@@ -28,11 +26,28 @@ module Paginate
     end
   
     def count_contents
-      ConnectDb.get_client.query("SELECT COUNT(*) FROM blogs").first["COUNT(*)"]
+      ConnectDb.get_client.query("SELECT COUNT(*) FROM #{self.name.downcase}s ").first["COUNT(*)"]
     end
 
     def has_previous?(page_num)
-      count_contents.to_i > page_num.to_i * BLOG_CONTENTS_UNIT  
+      count_contents.to_i > page_num.to_i * self.contents_unit 
     end
+
+    def contents_unit=(value)
+      @contents_unit = value.to_i
+    end
+
+    def contents_unit
+      @contents_unit 
+    end 
+ 
+    def sort_colomn=(value)
+      @sort_colomn = value
+    end
+ 
+    def sort_colomn
+      @sort_colomn
+    end
+
   end
 end
