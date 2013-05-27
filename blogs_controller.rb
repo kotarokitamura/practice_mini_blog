@@ -64,7 +64,6 @@ class BlogsController < Sinatra::Base
     redirect "/blogs/#{params[:blog_id]}"
   end
 
-
   helpers do
     ONE_PAGE = 1
     def message_info(obj)
@@ -77,23 +76,20 @@ class BlogsController < Sinatra::Base
       (obj.error_message || []).join("<br />")
     end
 
-    def next_page_id(page_num)
-      page_num.to_i - ONE_PAGE
-    end 
-
-    def next_message(page_num)    
-      page_num = ONE_PAGE if  page_num.nil?
-      page_num.to_i != ONE_PAGE ? "next" : ""
+    def next_message(content)  
+      content[:page_info][:has_next] ? "next" : "" 
     end
 
-    def previous_page_id(page_num)
-      page_num = ONE_PAGE if  page_num.nil?
-      page_num.to_i + ONE_PAGE
+    def previous_message(content)
+      content[:page_info][:has_previous] ? "previous" : "" 
     end
 
-    def previous_message(page_num)
-      page_num = ONE_PAGE if page_num.nil?
-      Blog.has_previous?(page_num) ? "previous" : "" 
+    def next_page(content)
+      content[:page_info][:current_page] - 1
+    end
+
+    def previous_page(content)
+      content[:page_info][:current_page] + 1
     end
   end
 
@@ -103,6 +99,6 @@ class BlogsController < Sinatra::Base
   end
 
   def set_comments
-    @comments = Comment.contents_limited(@blog)
+    @comments = Comment.contents_paginate(@blog)[:data]
   end
 end
