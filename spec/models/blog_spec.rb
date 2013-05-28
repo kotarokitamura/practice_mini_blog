@@ -1,14 +1,6 @@
 # coding: utf-8
 ENV['RACK_ENV'] = "test"
-require 'rubygems'
-require 'rspec'
-require 'mysql2'
-require 'yaml'
-require File.expand_path(File.dirname(__FILE__) + "/../../models/content.rb")
-require File.expand_path(File.dirname(__FILE__) + "/../../models/blog.rb") 
-require File.expand_path(File.dirname(__FILE__) + "/../../models/comment.rb") 
-require File.expand_path(File.dirname(__FILE__) + "/../../models/connect_db.rb") 
-
+require File.expand_path(File.dirname(__FILE__) + "/spec_helper.rb") 
 
 describe Blog do
   FIRST_BLOG_ID = 1
@@ -68,7 +60,6 @@ describe Blog do
       @blog.should_not be_title_over_limit
     end
 
-
     it "should return true when title has over #{Blog::BODY_MAX_LENGTH} charactors in Japanese" do
       @blog.title = "い"
       @blog.body = "あ" * (Blog::BODY_MAX_LENGTH ) + "あ"
@@ -98,7 +89,10 @@ describe Blog do
     before do 
       @client = ConnectDb.get_client
       @client.query("create table blogs (id INT UNSIGNED NOT NULL AUTO_INCREMENT,title TEXT, body TEXT, created_at DATETIME, updated_at DATETIME,primary key(id));") 
-      fixture_data = [['title1','body1'],['title2','body2'],['title2.5','body2.5'],['title3','body3']]
+      fixture_data = []
+      for num in 1..50 do
+        fixture_data << ["title#{num}","body#{num}"]
+      end
       @blog_data = []
       fixture_data.each do |title,body|
         @client.query("INSERT INTO blogs (title,body,created_at,updated_at) VALUES ('#{title}','#{body}','#{Time.now}','#{Time.now}')")
@@ -108,7 +102,7 @@ describe Blog do
     end
 
     it 'should select_all_blogs and match all fixture data'  do 
-      all_blogs = Blog.contents_paginate(PARAMS_ID)
+      all_blogs = Blog.contents_paginate(PARAMS_ID)[:data]
       all_blogs.each_with_index do |blog,count|
         blog.title.should == @blog_data[count][:title]
         blog.body.should == @blog_data[count][:body]
@@ -125,8 +119,8 @@ describe Blog do
       @blog.title = 'title4'
       @blog.body = 'body4'
       @blog.should be_save_valid
-      page_number = (@blog_data.count + ONE_CONTENT).quo(Blog.contents_unit)
-      last_blog = Blog.contents_paginate(page_number.ceil).last
+      page_number = (@blog_data.count + 1).quo(Blog::BLOG_CONTENTS_UNIT)
+      last_blog = Blog.contents_paginate(page_number.ceil)[:data].last
       last_blog.title.should == @blog.title
       last_blog.body.should == @blog.body
     end
@@ -156,7 +150,10 @@ describe Blog do
     before do 
       @client = ConnectDb.get_client
       @client.query("create table blogs (id INT UNSIGNED NOT NULL AUTO_INCREMENT,title TEXT, body TEXT, created_at DATETIME, updated_at DATETIME,primary key(id));") 
-      fixture_data = [['title1','body1'],['title2','body2'],['title3','body3'],['title4','body4'],['title5','body5']]
+      fixture_data = []
+      for num in 1..50 do
+        fixture_data << ["title#{num}","body#{num}"]
+      end
       @blog_data = []
       fixture_data.each do |title,body|
         @client.query("INSERT INTO blogs (title,body,created_at,updated_at) VALUES ('#{title}','#{body}','#{Time.now}','#{Time.now}')")
@@ -169,7 +166,7 @@ describe Blog do
     end
 
     it 'should get content match page' do
-      blogs = Blog.contents_paginate(PAGE_ONE)
+      blogs = Blog.contents_paginate(1)[:data]
       blogs.each_with_index do |blog, i|
         blog.title.should == @blog_data[i][:title]
       end
@@ -177,9 +174,8 @@ describe Blog do
     end
 
     it 'should check the page has next content or not' do
-      Blog.contents_unit = 3 
-      Blog.has_previous?(PAGE_ONE).should be_true
-      Blog.has_previous?(@blog_data.count/Blog.contents_unit + PAGE_ONE).should be_false
+      Blog.has_previous?(1).should be_true
+      Blog.has_previous?(@blog_data.count/Blog::BLOG_CONTENTS_UNIT + PAGE_ONE).should be_false
     end
 
     after do
