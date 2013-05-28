@@ -1,16 +1,13 @@
 # coding: utf-8
-ENV['RACK_ENV'] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/spec_helper.rb") 
 
 describe Blog do
-  FIRST_BLOG_ID = 1
-  PARAMS_ID = 1
+  include SettingDb 
 
   before do
     @blog = Blog.new
   end
   context 'with title and body have many pattern' do
-
     it 'should return true when title is empty' do
       @blog.title = ""
       @blog.body = "aaa"
@@ -34,7 +31,6 @@ describe Blog do
       @blog.body = "bbb"
       @blog.should_not be_title_over_limit
     end
-
 
     it "should return true when title has over #{Blog::BODY_MAX_LENGTH} charactors in English" do
       @blog.title = "bbb"
@@ -85,80 +81,56 @@ describe Blog do
   end
 
   context 'with blogs query' do
-    ONE_CONTENT = 1
     before do 
-      @client = ConnectDb.get_client
-      @client.query("create table blogs (id INT UNSIGNED NOT NULL AUTO_INCREMENT,title TEXT, body TEXT, created_at DATETIME, updated_at DATETIME,primary key(id));") 
-      fixture_data = []
-      for num in 1..50 do
-        fixture_data << ["title#{num}","body#{num}"]
-      end
-      @blog_data = []
-      fixture_data.each do |title,body|
-        @client.query("INSERT INTO blogs (title,body,created_at,updated_at) VALUES ('#{title}','#{body}','#{Time.now}','#{Time.now}')")
-        @blog_data << {:title => title, :body => body}
-      end
-            
+      set_blogs
     end
 
     it 'should select_all_blogs and match all fixture data'  do 
-      all_blogs = Blog.contents_paginate(PARAMS_ID)[:data]
-      all_blogs.each_with_index do |blog,count|
+      Blog.contents_paginate(1)[:data].each_with_index do |blog,count|
         blog.title.should == @blog_data[count][:title]
         blog.body.should == @blog_data[count][:body]
       end 
     end
  
     it 'should select_blog one and match it' do 
-      blog = Blog.select_one(FIRST_BLOG_ID)
+      blog = Blog.select_one(1)
       blog.title.should == @blog_data.first[:title]
       blog.body.should == @blog_data.first[:body]
     end
 
     it 'should insert new blog' do 
-      @blog.title = 'title4'
-      @blog.body = 'body4'
+      @blog.title = 'title51'
+      @blog.body = 'body51'
       @blog.should be_save_valid
-      page_number = (@blog_data.count + 1).quo(Blog::BLOG_CONTENTS_UNIT)
-      last_blog = Blog.contents_paginate(page_number.ceil)[:data].last
+      page_number = (@blog_data.count + 1).quo(Blog::BLOG_CONTENTS_UNIT).ceil
+      last_blog = Blog.contents_paginate(page_number)[:data].last
       last_blog.title.should == @blog.title
       last_blog.body.should == @blog.body
     end
 
     it 'should update blog information' do 
-      @blog.id = FIRST_BLOG_ID
+      @blog.id = 1 
       @blog.title = 'hogehoge'
       @blog.body = 'foofoo'
       @blog.should be_save_valid
-      first_blog = Blog.select_one(FIRST_BLOG_ID)
+      first_blog = Blog.select_one(1)
       first_blog.title.should == @blog.title 
       first_blog.body.should == @blog.body
     end 
 
     it 'should delete first blog' do
-      Blog.delete_one(FIRST_BLOG_ID)
-      Blog.select_one(FIRST_BLOG_ID).should be_nil
+      Blog.delete_one(1)
+      Blog.select_one(1).should be_nil
     end
   
     after do
-      @client.query("drop table blogs")
+      drop_blog_table
     end
   end
 
   context 'with using paginate module' do
-    PAGE_ONE = 1
     before do 
-      @client = ConnectDb.get_client
-      @client.query("create table blogs (id INT UNSIGNED NOT NULL AUTO_INCREMENT,title TEXT, body TEXT, created_at DATETIME, updated_at DATETIME,primary key(id));") 
-      fixture_data = []
-      for num in 1..50 do
-        fixture_data << ["title#{num}","body#{num}"]
-      end
-      @blog_data = []
-      fixture_data.each do |title,body|
-        @client.query("INSERT INTO blogs (title,body,created_at,updated_at) VALUES ('#{title}','#{body}','#{Time.now}','#{Time.now}')")
-        @blog_data << {:title => title, :body => body}
-      end
+      set_blogs
     end
 
     it 'should get correct page number' do
@@ -169,17 +141,17 @@ describe Blog do
       blogs = Blog.contents_paginate(1)[:data]
       blogs.each_with_index do |blog, i|
         blog.title.should == @blog_data[i][:title]
+        blog.body.should == @blog_data[i][:body]
       end
-      blogs.last.should_not == @blog_data.last[:title]
     end
 
     it 'should check the page has next content or not' do
       Blog.has_previous?(1).should be_true
-      Blog.has_previous?(@blog_data.count/Blog::BLOG_CONTENTS_UNIT + PAGE_ONE).should be_false
+      Blog.has_previous?(@blog_data.count/Blog::BLOG_CONTENTS_UNIT + 1).should be_false
     end
 
     after do
-      @client.query("drop table blogs")
+      drop_blog_table
     end
   end
 

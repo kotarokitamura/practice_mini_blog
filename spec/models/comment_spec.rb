@@ -1,10 +1,8 @@
 # coding: utf-8
-ENV['RACK_ENV'] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/spec_helper.rb") 
 
 describe Comment do
- BLOG_ID_OF_COMMENT = 1
- FIRST_COMMENT_ID = 1
+ include SettingDb 
   before do 
     @comment = Comment.new
   end 
@@ -55,31 +53,19 @@ describe Comment do
 
   context 'with comments query' do
     before do
-      @blog = Blog.new
-      @blog.id = BLOG_ID_OF_COMMENT
-      @client = ConnectDb.get_client
-      @client.query("create table comments (id INT UNSIGNED NOT NULL AUTO_INCREMENT,blog_id INT, body TEXT, created_at DATETIME, primary key(id))")
-      fixture_data = []
-      for num in 1..2000 do
-        fixture_data << ["comment#{num}",1]     
-      end
-      @comment_data = []
-      fixture_data.each do |body,blog_id|
-        @client.query("INSERT INTO comments(body,created_at,blog_id) VALUES ('#{body}','#{Time.now}','#{blog_id}')")
-        @comment_data << ({:body => body,:blog_id => blog_id})
-      end
+      set_comments
     end
     
     it 'should get all comments same blog_id' do 
       Comment.contents_paginate(@blog)[:data].each do |comment| 
-        comment.blog_id.should  == BLOG_ID_OF_COMMENT 
+        comment.blog_id.should  == 1 
       end 
     end
 
     it 'should delete comment' do 
-      Comment.delete_one(FIRST_COMMENT_ID)
+      Comment.delete_one(1)
       Comment.contents_paginate(@blog)[:data].each do |comment|
-        comment.id.should_not == FIRST_COMMENT_ID
+        comment.id.should_not == 1 
       end
     end
  
@@ -90,19 +76,7 @@ describe Comment do
  
   context 'with using paginate module' do 
     before do
-      @blog = Blog.new
-      @blog.id = BLOG_ID_OF_COMMENT
-      @client = ConnectDb.get_client
-      @client.query("create table comments (id INT UNSIGNED NOT NULL AUTO_INCREMENT,blog_id INT, body TEXT, created_at DATETIME, primary key(id))")
-      fixture_data = []
-      for num in 1..2000 do
-        fixture_data << ["comment#{num}",1]     
-      end
-      @comment_data = []
-      fixture_data.each do |body,blog_id|
-        @client.query("INSERT INTO comments(body,created_at,blog_id) VALUES ('#{body}','#{Time.now}','#{blog_id}')")
-        @comment_data << ({:body => body,:blog_id => blog_id})
-      end
+      set_comments
     end
    
     it 'should get contents only limited number' do
@@ -111,7 +85,7 @@ describe Comment do
     end
 
     after do 
-      @client.query("drop table comments") 
+      drop_comment_table
     end
   end
 end
