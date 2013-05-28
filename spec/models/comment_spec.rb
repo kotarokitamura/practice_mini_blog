@@ -70,7 +70,7 @@ describe Comment do
     end
  
     after do 
-      @client.query("drop table comments") 
+      drop_comment_table
     end
   end 
  

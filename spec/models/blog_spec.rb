@@ -154,6 +154,5 @@ describe Blog do
       drop_blog_table
     end
   end
-
 end
 
