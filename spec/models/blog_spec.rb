@@ -83,27 +83,27 @@ describe Blog do
   context 'with blogs query' do
     before(:all) do 
       create_table
-      fixture :blog
+      fixture :blogs
     end
 
     it 'should select_all_blogs and match all fixture data'  do 
       Blog.contents_paginate(1)[:data].each_with_index do |blog,count|
-        blog.title.should == @blog_data[count][:title]
-        blog.body.should == @blog_data[count][:body]
+        blog.title.should == @contents_data[count][:title]
+        blog.body.should == @contents_data[count][:body]
       end 
     end
  
     it 'should select_blog one and match it' do 
       blog = Blog.select_one(1)
-      blog.title.should == @blog_data.first[:title]
-      blog.body.should == @blog_data.first[:body]
+      blog.title.should == @contents_data.first[:title]
+      blog.body.should == @contents_data.first[:body]
     end
 
     it 'should insert new blog' do 
       @blog.title = 'title51'
       @blog.body = 'body51'
       @blog.should be_save_valid
-      page_number = (@blog_data.count + 1).quo(Blog::BLOG_CONTENTS_UNIT).ceil
+      page_number = (@contents_data.count + 1).quo(Blog::BLOG_CONTENTS_UNIT).ceil
       last_blog = Blog.contents_paginate(page_number)[:data].last
       last_blog.title.should == @blog.title
       last_blog.body.should == @blog.body
@@ -127,24 +127,24 @@ describe Blog do
 
   context 'with using paginate module' do
     before(:all) do 
-      fixture :blog
+      fixture :blogs
     end
 
     it 'should get correct page number' do
-      Blog.count_contents.should == @blog_data.count      
+      Blog.count_contents.should == @contents_data.count      
     end
 
     it 'should get content match page' do
       blogs = Blog.contents_paginate(1)[:data]
       blogs.each_with_index do |blog, i|
-        blog.title.should == @blog_data[i][:title]
-        blog.body.should == @blog_data[i][:body]
+        blog.title.should == @contents_data[i][:title]
+        blog.body.should == @contents_data[i][:body]
       end
     end
 
     it 'should check the page has next content or not' do
       Blog.has_previous?(1).should be_true
-      Blog.has_previous?(@blog_data.count/Blog::BLOG_CONTENTS_UNIT + 1).should be_false
+      Blog.has_previous?(@contents_data.count/Blog::BLOG_CONTENTS_UNIT + 1).should be_false
     end
   end
 end

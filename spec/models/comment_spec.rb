@@ -53,7 +53,7 @@ describe Comment do
 
   context 'with comments query' do
     before(:all) do
-      fixture :comment
+      fixture :comments
     end
     
     it 'should get all comments same blog_id' do 
@@ -72,12 +72,12 @@ describe Comment do
  
   context 'with using paginate module' do 
     before do
-      fixture :comment
+      fixture :comments
     end
    
     it 'should get contents only limited number' do
       Comment.contents_paginate(nil,@blog)[:data].count.should == Comment::COMMENT_CONTENTS_UNIT
-      Comment.contents_paginate(nil,@blog)[:data].last.body.should_not == @comment_data.last[:body]
+      Comment.contents_paginate(nil,@blog)[:data].last.body.should_not == @contents_data.last[:body]
     end
 
     after do 

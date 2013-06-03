@@ -20,33 +20,29 @@ module SettingDb
 
   def fixture(contents)
     @client = ConnectDb.get_client
-    if contents == :blog 
-      @client.query('TRUNCATE TABLE blogs')
-      fixture_blog_data = YAML.load_file File.expand_path(File.dirname(__FILE__) + "/../../spec/models/fixtures/blogs.yml") 
-      fixture_data = []
-      fixture_blog_data.each_with_index do |fixture,num|
-        fixture_data << [fixture_blog_data["blog#{num+1}"]["title"],fixture_blog_data["blog#{num+1}"]["body"]]
+    @client.query("TRUNCATE TABLE #{contents}")
+    fixture_contents = YAML.load_file File.expand_path(File.dirname(__FILE__) + "/../../spec/models/fixtures/#{contents}.yml") 
+    fixture_data = []
+      @contents_data = []
+    if contents == :blogs 
+      fixture_contents.each_with_index do |fixture,num|
+        fixture_data << [fixture_contents["blog#{num+1}"]["title"],fixture_contents["blog#{num+1}"]["body"]]
       end
-      @blog_data = []
       num = 1
       fixture_data.each do |title,body|
         @client.query("INSERT INTO blogs (id,title,body,created_at,updated_at) VALUES ('#{num}','#{title}','#{body}','#{Time.now}','#{Time.now}')")
-        @blog_data << {:title => title, :body => body}
+        @contents_data << {:title => title, :body => body}
         num  += 1
       end
     else
-      @client.query('TRUNCATE TABLE comments')
       @blog = Blog.new
       @blog.id = 1
-      fixture_comment_data = YAML.load_file File.expand_path(File.dirname(__FILE__) + "/../../spec/models/fixtures/comments.yml") 
-      fixture_data = []
-      fixture_comment_data.each_with_index do |fixture,num|
-        fixture_data << [fixture_comment_data["comment#{num+1}"]["body"],fixture_comment_data["comment#{num+1}"]["blog_id"]]
+      fixture_contents.each_with_index do |fixture,num|
+        fixture_data << [fixture_contents["comment#{num+1}"]["body"],fixture_contents["comment#{num+1}"]["blog_id"]]
       end
-      @comment_data = []
       fixture_data.each do |body,blog_id|
         @client.query("INSERT INTO comments(body,created_at,blog_id) VALUES ('#{body}','#{Time.now}','#{blog_id}')")
-        @comment_data << ({:body => body, :blog_id => blog_id})
+        @contents_data << ({:body => body, :blog_id => blog_id})
       end
     end
   end
