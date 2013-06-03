@@ -57,14 +57,14 @@ describe Comment do
     end
     
     it 'should get all comments same blog_id' do 
-      Comment.contents_paginate(@blog)[:data].each do |comment| 
+      Comment.contents_paginate(nil,@blog)[:data].each do |comment| 
         comment.blog_id.should  == 1 
       end 
     end
 
     it 'should delete comment' do 
       Comment.delete_one(1)
-      Comment.contents_paginate(@blog)[:data].each do |comment|
+      Comment.contents_paginate(nil,@blog)[:data].each do |comment|
         comment.id.should_not == 1 
       end
     end
@@ -80,8 +80,8 @@ describe Comment do
     end
    
     it 'should get contents only limited number' do
-      Comment.contents_paginate(@blog)[:data].count.should == Comment::COMMENT_CONTENTS_UNIT
-      Comment.contents_paginate(@blog)[:data].last.body.should_not == @comment_data.last[:body]
+      Comment.contents_paginate(nil,@blog)[:data].count.should == Comment::COMMENT_CONTENTS_UNIT
+      Comment.contents_paginate(nil,@blog)[:data].last.body.should_not == @comment_data.last[:body]
     end
 
     after do 

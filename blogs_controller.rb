@@ -99,6 +99,6 @@ class BlogsController < Sinatra::Base
   end
 
   def set_comments
-    @comments = Comment.contents_paginate(@blog)[:data]
+    @comments = Comment.contents_paginate(nil,@blog)[:data]
   end
 end

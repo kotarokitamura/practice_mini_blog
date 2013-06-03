@@ -9,15 +9,11 @@ module Paginate
   end
   
   module ClassMethod
-    def contents_paginate(content_info)
+    def contents_paginate(page_number,obj = nil)
+      page_number =  page_number.nil? ? 1 : page_number.to_i 
+      contents_offset = BLOG_CONTENTS_UNIT * page_number.to_i - BLOG_CONTENTS_UNIT  
       query_str = "SELECT * FROM #{self.name.downcase}s "
-      if content_info.respond_to?('id')
-        query_str += " WHERE #{content_info.class.name.downcase}_id=#{content_info.id} ORDER BY #{COMMENT_SORT_COLUMN} DESC LIMIT #{COMMENT_CONTENTS_UNIT} " 
-      else 
-        page_number =  content_info.nil? ? 1 : content_info.to_i 
-        contents_offset = BLOG_CONTENTS_UNIT * page_number - BLOG_CONTENTS_UNIT  
-        query_str += "ORDER BY #{BLOG_SORT_COLUMN} DESC LIMIT #{BLOG_CONTENTS_UNIT} OFFSET #{contents_offset}"
-      end
+      query_str += obj.nil? ? "ORDER BY #{BLOG_SORT_COLUMN} DESC LIMIT #{BLOG_CONTENTS_UNIT} OFFSET #{contents_offset}" : " WHERE #{obj.class.name.downcase}_id=#{obj.id} ORDER BY #{COMMENT_SORT_COLUMN} DESC LIMIT #{COMMENT_CONTENTS_UNIT} " 
       {:data => get_contents(query_str),:page_info => {:has_next => has_next?(page_number) ,:current_page => page_number ,:has_previous => has_previous?(page_number) }} 
     end
 
@@ -41,6 +37,5 @@ module Paginate
     def has_previous?(page_num)
       count_contents.to_i > page_num.to_i * BLOG_CONTENTS_UNIT
     end
-
   end
 end
