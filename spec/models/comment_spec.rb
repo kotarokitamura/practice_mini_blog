@@ -52,7 +52,7 @@ describe Comment do
   end
 
   context 'with comments query' do
-    before do
+    before(:all) do
       set_comments
     end
     
@@ -68,10 +68,6 @@ describe Comment do
         comment.id.should_not == 1 
       end
     end
- 
-    after do 
-      drop_comment_table
-    end
   end 
  
   context 'with using paginate module' do 
@@ -85,7 +81,7 @@ describe Comment do
     end
 
     after do 
-      drop_comment_table
+      drop_table
     end
   end
 end

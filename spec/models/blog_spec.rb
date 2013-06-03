@@ -81,7 +81,7 @@ describe Blog do
   end
 
   context 'with blogs query' do
-    before do 
+    before(:all) do 
       set_blogs
     end
 
@@ -122,14 +122,10 @@ describe Blog do
       Blog.delete_one(1)
       Blog.select_one(1).should be_nil
     end
-  
-    after do
-      drop_blog_table
-    end
   end
 
   context 'with using paginate module' do
-    before do 
+    before(:all) do 
       set_blogs
     end
 
@@ -148,10 +144,6 @@ describe Blog do
     it 'should check the page has next content or not' do
       Blog.has_previous?(1).should be_true
       Blog.has_previous?(@blog_data.count/Blog::BLOG_CONTENTS_UNIT + 1).should be_false
-    end
-
-    after do
-      drop_blog_table
     end
   end
 end
