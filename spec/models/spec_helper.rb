@@ -23,7 +23,7 @@ module SettingDb
     @client.query("TRUNCATE TABLE #{contents}")
     fixture_contents = YAML.load_file File.expand_path(File.dirname(__FILE__) + "/../../spec/models/fixtures/#{contents}.yml") 
     fixture_data = []
-      @contents_data = []
+    @contents_data = []
     if contents == :blogs 
       fixture_contents.each_with_index do |fixture,num|
         fixture_data << [fixture_contents["blog#{num+1}"]["title"],fixture_contents["blog#{num+1}"]["body"]]
