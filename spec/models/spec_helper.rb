@@ -28,11 +28,11 @@ module SettingDb
       fixture_contents.each_with_index do |fixture,num|
         fixture_data << [fixture_contents["blog#{num+1}"]["title"],fixture_contents["blog#{num+1}"]["body"]]
       end
-      num = 1
+      blog_id = 1
       fixture_data.each do |title,body|
-        @client.query("INSERT INTO blogs (id,title,body,created_at,updated_at) VALUES ('#{num}','#{title}','#{body}','#{Time.now}','#{Time.now}')")
+        @client.query("INSERT INTO blogs (id,title,body,created_at,updated_at) VALUES ('#{blog_id}','#{title}','#{body}','#{Time.now}','#{Time.now}')")
         @contents_data << {:title => title, :body => body}
-        num  += 1
+        blog_id  += 1 
       end
     else
       @blog = Blog.new
