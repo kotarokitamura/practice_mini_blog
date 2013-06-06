@@ -1,0 +1,2 @@
+class ResourceProperty
+end
