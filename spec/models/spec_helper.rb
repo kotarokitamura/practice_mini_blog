@@ -17,37 +17,52 @@ module SettingDb
   def create_table
     `mysqldump -u root -d mblog | mysql -u root mblog_test`
   end
+  
+  def get_blog_contents
+    fixture_contents = YAML.load_file File.expand_path(File.dirname(__FILE__) + "/../../spec/models/fixtures/blogs.yml") 
+    fixture_data = []
+    @contents_data = []
+    fixture_contents.each_with_index do |fixture,num|
+      fixture_data << [fixture_contents["blog#{num+1}"]["id"],fixture_contents["blog#{num+1}"]["title"],fixture_contents["blog#{num+1}"]["body"],fixture_contents["blog#{num+1}"]["created_at"],fixture_contents["blog#{num+1}"]["updated_at"]]
+    end
+    fixture_data.each do |id,title,body|
+      @contents_data << {:title => title, :body => body}
+    end
+  end
+
+  def get_comment_contents
+    fixture_contents = YAML.load_file File.expand_path(File.dirname(__FILE__) + "/../../spec/models/fixtures/comments.yml") 
+    fixture_data = []
+    @contents_data = []
+    fixture_contents.each_with_index do |fixture,num|
+      fixture_data << [fixture_contents["comment#{num+1}"]["id"],fixture_contents["comment#{num+1}"]["blog_id"],fixture_contents["comment#{num+1}"]["body"],fixture_contents["comment#{num+1}"]["created_at"]]
+    end
+    fixture_data.each do |id,title,body|
+      @contents_data << {:title => title, :body => body}
+    end
+  end
+
 
   def fixture(content)
     @client = ConnectDb.get_client
     @client.query("TRUNCATE TABLE #{content}s")
     fixture_contents = YAML.load_file File.expand_path(File.dirname(__FILE__) + "/../../spec/models/fixtures/#{content}s.yml") 
     fixture_data = []
-    @contents_data = []
     if content == :blog
       fixture_contents.each_with_index do |fixture,num|
         fixture_data << [fixture_contents["#{content}#{num+1}"]["id"],fixture_contents["#{content}#{num+1}"]["title"],fixture_contents["#{content}#{num+1}"]["body"],fixture_contents["#{content}#{num+1}"]["created_at"],fixture_contents["#{content}#{num+1}"]["updated_at"]]
-         @insert_attr = fixture_contents["#{content}#{num+1}"].keys.join(',')
- 
-      end
-      fixture_data.each do |id,title,body,created_at,updated_at|
-        
-        @insert_values ="'" + fixture_contents["#{content}#{id}"].values.join("','") + "'"
-        @client.query("INSERT INTO #{content}s (#{@insert_attr}) VALUES (#{@insert_values})")
-        @contents_data << {:title => title, :body => body}
       end
     else
       @blog = Blog.new
       @blog.id = 1
       fixture_contents.each_with_index do |fixture,num|
         fixture_data << [fixture_contents["#{content}#{num+1}"]["id"],fixture_contents["#{content}#{num+1}"]["blog_id"],fixture_contents["#{content}#{num+1}"]["body"],fixture_contents["#{content}#{num+1}"]["created_at"]]
-         @insert_attr = fixture_contents["#{content}#{num+1}"].keys.join(',')
       end
-      fixture_data.each do |id,blog_id,body,created_at|
-        @insert_values ="'" + fixture_contents["#{content}#{id}"].values.join("','") + "'"
-        @client.query("INSERT INTO #{content}s (#{@insert_attr}) VALUES (#{@insert_values})")
-        @contents_data << ({:body => body, :blog_id => blog_id})
-      end
+    end
+    @insert_attr = fixture_contents["#{content}1"].keys.join(',')
+    fixture_data.each do |id,data|
+      @insert_values ="'" + fixture_contents["#{content}#{id}"].values.join("','") + "'"
+      @client.query("INSERT INTO #{content}s (#{@insert_attr}) VALUES (#{@insert_values})")
     end
   end
 end

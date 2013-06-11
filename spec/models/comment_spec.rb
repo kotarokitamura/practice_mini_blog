@@ -54,6 +54,7 @@ describe Comment do
   context 'with comments query' do
     before(:all) do
       fixture :comment
+      get_comment_contents
     end
     
     it 'should get all comments same blog_id' do 
@@ -73,6 +74,7 @@ describe Comment do
   context 'with using paginate module' do 
     before do
       fixture :comment
+      get_comment_contents
     end
    
     it 'should get contents only limited number' do

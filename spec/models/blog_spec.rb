@@ -81,9 +81,10 @@ describe Blog do
   end
 
   context 'with blogs query' do
-    before(:all) do 
+    before do 
       create_table
       fixture :blog
+      get_blog_contents
     end
 
     it 'should select_all_blogs and match all fixture data'  do 
@@ -127,6 +128,7 @@ describe Blog do
   context 'with using paginate module' do
     before(:all) do 
       fixture :blog
+      get_blog_contents
     end
 
     it 'should get correct page number' do
