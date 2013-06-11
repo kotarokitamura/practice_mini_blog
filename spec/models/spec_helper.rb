@@ -25,8 +25,7 @@ module SettingDb
     insert_attr = fixture_contents["#{content}1"].keys.join(',')
     all_insert_values = []
     fixture_contents.count.times do |i|
-      each_insert_values ="('" + fixture_contents["#{content}#{i+1}"].values.join("','") + "')"
-      all_insert_values << each_insert_values
+      all_insert_values << "('" + fixture_contents["#{content}#{i+1}"].values.join("','") + "')"
     end
     joined_insert_values = all_insert_values.join(',')
     @client.query("INSERT INTO #{content}s (#{insert_attr}) VALUES #{joined_insert_values}")
