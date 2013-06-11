@@ -3,14 +3,6 @@ require File.expand_path(File.dirname(__FILE__) + "/spec_helper.rb")
 
 describe Comment do
  include SettingDb 
-  let(:contents_data){
-    fixture_contents = YAML.load_file File.expand_path(File.dirname(__FILE__) + "/../../spec/models/fixtures/comments.yml")
-    contents_data = []
-    fixture_contents.each_with_index do |fixture,num|
-      contents_data << {:id => fixture_contents["comment#{num+1}"]["id"],:blog_id => fixture_contents["comment#{num+1}"]["blog_id"],:body => fixture_contents["comment#{num+1}"]["body"],:created_at => fixture_contents["comment#{num+1}"]["created_at"]}
-    end
-  }
- 
   before do 
     @comment = Comment.new
   end 
