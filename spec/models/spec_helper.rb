@@ -28,9 +28,12 @@ module SettingDb
       fixture_contents.each_with_index do |fixture,num|
         fixture_data << [fixture_contents["#{content}#{num+1}"]["id"],fixture_contents["#{content}#{num+1}"]["title"],fixture_contents["#{content}#{num+1}"]["body"],fixture_contents["#{content}#{num+1}"]["created_at"],fixture_contents["#{content}#{num+1}"]["updated_at"]]
          @insert_attr = fixture_contents["#{content}#{num+1}"].keys.join(',')
+ 
       end
       fixture_data.each do |id,title,body,created_at,updated_at|
-        @client.query("INSERT INTO #{content}s (#{@insert_attr}) VALUES ('#{id}','#{title}','#{body}','#{created_at}','#{updated_at}')")
+        
+        @insert_values ="'" + fixture_contents["#{content}#{id}"].values.join("','") + "'"
+        @client.query("INSERT INTO #{content}s (#{@insert_attr}) VALUES (#{@insert_values})")
         @contents_data << {:title => title, :body => body}
       end
     else
@@ -41,7 +44,8 @@ module SettingDb
          @insert_attr = fixture_contents["#{content}#{num+1}"].keys.join(',')
       end
       fixture_data.each do |id,blog_id,body,created_at|
-        @client.query("INSERT INTO #{content}s (#{@insert_attr}) VALUES ('#{id}','#{blog_id}','#{body}','#{created_at}')")
+        @insert_values ="'" + fixture_contents["#{content}#{id}"].values.join("','") + "'"
+        @client.query("INSERT INTO #{content}s (#{@insert_attr}) VALUES (#{@insert_values})")
         @contents_data << ({:body => body, :blog_id => blog_id})
       end
     end
