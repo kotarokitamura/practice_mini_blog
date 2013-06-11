@@ -17,7 +17,7 @@ module SettingDb
   def create_table
     `mysqldump -u root -d mblog | mysql -u root mblog_test`
   end
-  
+=begin  
   def get_blog_contents
     fixture_contents = YAML.load_file File.expand_path(File.dirname(__FILE__) + "/../../spec/models/fixtures/blogs.yml") 
     fixture_data = []
@@ -29,7 +29,7 @@ module SettingDb
       @contents_data << {:title => title, :body => body}
     end
   end
-
+=end
   def get_comment_contents
     fixture_contents = YAML.load_file File.expand_path(File.dirname(__FILE__) + "/../../spec/models/fixtures/comments.yml") 
     fixture_data = []

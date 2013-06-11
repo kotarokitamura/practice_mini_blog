@@ -3,6 +3,15 @@ require File.expand_path(File.dirname(__FILE__) + "/spec_helper.rb")
 
 describe Blog do
   include SettingDb 
+  let(:contents_data){
+    fixture_contents = YAML.load_file File.expand_path(File.dirname(__FILE__) + "/../../spec/models/fixtures/blogs.yml")
+    contents_data = []
+    fixture_contents.each_with_index do |fixture,num|
+      contents_data << {:id => fixture_contents["blog#{num+1}"]["id"],:title => fixture_contents["blog#{num+1}"]["title"],:body => fixture_contents["blog#{num+1}"]["body"],:created_at => fixture_contents["blog#{num+1}"]["created_at"],:updated_at => fixture_contents["blog#{num+1}"]["updated_at"]}
+    end
+  }
+
+
 
   before do
     @blog = Blog.new
@@ -84,20 +93,19 @@ describe Blog do
     before do 
       create_table
       fixture :blog
-      get_blog_contents
     end
 
     it 'should select_all_blogs and match all fixture data'  do 
       Blog.contents_paginate(1)[:data].each_with_index do |blog,count|
-        blog.title.should == @contents_data[count][:title]
-        blog.body.should == @contents_data[count][:body]
+        blog.title.should == contents_data["blog#{count+1}"]["title"]
+        blog.body.should == contents_data["blog#{count+1}"]["body"]
       end 
     end
  
     it 'should select_blog one and match it' do 
       blog = Blog.select_one(1)
-      blog.title.should == @contents_data.first[:title]
-      blog.body.should == @contents_data.first[:body]
+      blog.title.should == contents_data["blog1"]["title"]
+      blog.body.should == contents_data["blog1"]["body"]
     end
 
     it 'should insert new blog' do 
@@ -128,24 +136,23 @@ describe Blog do
   context 'with using paginate module' do
     before(:all) do 
       fixture :blog
-      get_blog_contents
     end
 
     it 'should get correct page number' do
-      Blog.count_contents.should == @contents_data.count      
+      Blog.count_contents.should == contents_data.count      
     end
 
     it 'should get content match page' do
-      blogs = Blog.contents_paginate(1)[:data]
+      blogs = Blog.contents_paginate(1)[:data] 
       blogs.each_with_index do |blog, i|
-        blog.title.should == @contents_data[i][:title]
-        blog.body.should == @contents_data[i][:body]
+        blog.title.should == contents_data["blog#{i+1}"]["title"]
+        blog.body.should == contents_data["blog#{i+1}"]["body"]
       end
     end
 
     it 'should check the page has next content or not' do
       Blog.has_previous?(1).should be_true
-      Blog.has_previous?(@contents_data.count/Blog::BLOG_CONTENTS_UNIT + 1).should be_false
+      Blog.has_previous?(contents_data.count/Blog::BLOG_CONTENTS_UNIT + 1).should be_false
     end
   end
 end
