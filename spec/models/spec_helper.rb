@@ -27,19 +27,21 @@ module SettingDb
     if content == :blog
       fixture_contents.each_with_index do |fixture,num|
         fixture_data << [fixture_contents["#{content}#{num+1}"]["id"],fixture_contents["#{content}#{num+1}"]["title"],fixture_contents["#{content}#{num+1}"]["body"],fixture_contents["#{content}#{num+1}"]["created_at"],fixture_contents["#{content}#{num+1}"]["updated_at"]]
+         @insert_attr = fixture_contents["#{content}#{num+1}"].keys.join(',')
       end
       fixture_data.each do |id,title,body,created_at,updated_at|
-        @client.query("INSERT INTO #{content}s (id,title,body,created_at,updated_at) VALUES ('#{id}','#{title}','#{body}','#{created_at}','#{updated_at}')")
+        @client.query("INSERT INTO #{content}s (#{@insert_attr}) VALUES ('#{id}','#{title}','#{body}','#{created_at}','#{updated_at}')")
         @contents_data << {:title => title, :body => body}
       end
     else
       @blog = Blog.new
       @blog.id = 1
       fixture_contents.each_with_index do |fixture,num|
-        fixture_data << [fixture_contents["#{content}#{num+1}"]["id"],fixture_contents["#{content}#{num+1}"]["body"],fixture_contents["#{content}#{num+1}"]["blog_id"]]
+        fixture_data << [fixture_contents["#{content}#{num+1}"]["id"],fixture_contents["#{content}#{num+1}"]["blog_id"],fixture_contents["#{content}#{num+1}"]["body"],fixture_contents["#{content}#{num+1}"]["created_at"]]
+         @insert_attr = fixture_contents["#{content}#{num+1}"].keys.join(',')
       end
-      fixture_data.each do |id,body,blog_id|
-        @client.query("INSERT INTO #{content}s (id,body,created_at,blog_id) VALUES ('#{id}','#{body}','#{Time.now}','#{blog_id}')")
+      fixture_data.each do |id,blog_id,body,created_at|
+        @client.query("INSERT INTO #{content}s (#{@insert_attr}) VALUES ('#{id}','#{blog_id}','#{body}','#{created_at}')")
         @contents_data << ({:body => body, :blog_id => blog_id})
       end
     end
