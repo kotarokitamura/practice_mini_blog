@@ -57,6 +57,15 @@ describe Comment do
       @blog = Blog.new
       @blog.id = 1
     end
+  
+    it 'should insert new comment' do
+      @comment = Comment.new
+      @comment.blog_id = 1
+      @comment.body = 'latest_comment'
+      @comment.created_at = Time.now
+      @comment.save_valid?
+      Comment.contents_paginate(nil,@blog)[:data].first.body.should == @comment.body
+    end
     
     it 'should get all comments same blog_id' do 
       Comment.contents_paginate(nil,@blog)[:data].each do |comment| 
