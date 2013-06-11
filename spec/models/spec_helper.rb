@@ -26,10 +26,10 @@ module SettingDb
     @contents_data = []
     if content == :blog
       fixture_contents.each_with_index do |fixture,num|
-        fixture_data << [fixture_contents["#{content}#{num+1}"]["id"],fixture_contents["#{content}#{num+1}"]["title"],fixture_contents["#{content}#{num+1}"]["body"]]
+        fixture_data << [fixture_contents["#{content}#{num+1}"]["id"],fixture_contents["#{content}#{num+1}"]["title"],fixture_contents["#{content}#{num+1}"]["body"],fixture_contents["#{content}#{num+1}"]["created_at"],fixture_contents["#{content}#{num+1}"]["updated_at"]]
       end
-      fixture_data.each do |id,title,body|
-        @client.query("INSERT INTO #{content}s (id,title,body,created_at,updated_at) VALUES ('#{id}','#{title}','#{body}','#{Time.now}','#{Time.now}')")
+      fixture_data.each do |id,title,body,created_at,updated_at|
+        @client.query("INSERT INTO #{content}s (id,title,body,created_at,updated_at) VALUES ('#{id}','#{title}','#{body}','#{created_at}','#{updated_at}')")
         @contents_data << {:title => title, :body => body}
       end
     else

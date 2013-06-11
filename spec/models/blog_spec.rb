@@ -100,11 +100,10 @@ describe Blog do
     end
 
     it 'should insert new blog' do 
-      @blog.title = 'title51'
-      @blog.body = 'body51'
+      @blog.title = 'title_last'
+      @blog.body = 'body_last'
       @blog.should be_save_valid
-      page_number = (@contents_data.count + 1).quo(Blog::BLOG_CONTENTS_UNIT).ceil
-      last_blog = Blog.contents_paginate(page_number)[:data].last
+      last_blog = Blog.contents_paginate(1)[:data].first
       last_blog.title.should == @blog.title
       last_blog.body.should == @blog.body
     end
