@@ -17,19 +17,7 @@ module SettingDb
   def create_table
     `mysqldump -u root -d mblog | mysql -u root mblog_test`
   end
-=begin  
-  def get_blog_contents
-    fixture_contents = YAML.load_file File.expand_path(File.dirname(__FILE__) + "/../../spec/models/fixtures/blogs.yml") 
-    fixture_data = []
-    @contents_data = []
-    fixture_contents.each_with_index do |fixture,num|
-      fixture_data << [fixture_contents["blog#{num+1}"]["id"],fixture_contents["blog#{num+1}"]["title"],fixture_contents["blog#{num+1}"]["body"],fixture_contents["blog#{num+1}"]["created_at"],fixture_contents["blog#{num+1}"]["updated_at"]]
-    end
-    fixture_data.each do |id,title,body|
-      @contents_data << {:title => title, :body => body}
-    end
-  end
-=end
+=begin 
   def get_comment_contents
     fixture_contents = YAML.load_file File.expand_path(File.dirname(__FILE__) + "/../../spec/models/fixtures/comments.yml") 
     fixture_data = []
@@ -41,7 +29,7 @@ module SettingDb
       @contents_data << {:title => title, :body => body}
     end
   end
-
+=end
 
   def fixture(content)
     @client = ConnectDb.get_client
