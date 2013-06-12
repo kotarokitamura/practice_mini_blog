@@ -1,0 +1,7 @@
+title_max_length: 50 
+body_max_length: 300
+second_of_day: 86400
+blog_sort_column: 'updated_at'
+blog_contents_unit: 10
+comment_sort_column: 'created_at'
+comment_contents_unit: 1000

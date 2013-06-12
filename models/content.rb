@@ -1,7 +1,6 @@
+require File.expand_path(File.dirname(__FILE__) + "/resource_property.rb")
 require File.expand_path(File.dirname(__FILE__) + "/../lib/paginate.rb")  
 class Content
-  SECONDS_OF_DAY = 86400
-  BODY_MAX_LENGTH = 300
   attr_accessor :id, :body, :created_at, :error_message
   include Paginate
   #----------------------------
@@ -38,7 +37,7 @@ class Content
   end
 
   def created_new?
-    Time.now - created_at < SECONDS_OF_DAY
+    Time.now - created_at < ResourceProperty.second_of_day 
   end
 
   def set_params(params)
@@ -53,7 +52,7 @@ class Content
   def check_all_valid?
     self.error_message = []
     check_valid_and_set_error_message
-    self.error_message << "word count of title should be under #{self.class::BODY_MAX_LENGTH} capitals" if body_over_limit?
+    self.error_message << "word count of title should be under #{ResourceProperty.body_max_length} capitals" if body_over_limit?
     self.error_message << "body should not be empty" if body_empty?
     self.error_message == []
   end
@@ -63,7 +62,7 @@ class Content
   end
 
   def body_over_limit?
-    body.length > self.class::BODY_MAX_LENGTH
+    body.length > ResourceProperty.body_max_length 
   end
 
   def check_valid_and_set_error_message
