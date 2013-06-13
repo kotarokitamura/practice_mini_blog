@@ -3,7 +3,6 @@ require File.expand_path(File.dirname(__FILE__) + "/../lib/paginate.rb")
  
 class Blog < Content
   attr_accessor :title,:updated_at
-  UPDATABLE = [:id, :title, :body, :created_at, :updated_at]
   #-----------------------------
   # instance methods
   #-----------------------------
