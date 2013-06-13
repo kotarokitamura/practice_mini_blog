@@ -18,23 +18,23 @@ describe Comment do
       @comment.should_not be_body_empty
     end
 
-    it "should be return true when body has over #{ResourceProperty.body_max_length} in English" do
-      @comment.body = "a" * (ResourceProperty.body_max_length) + "a" 
+    it "should be return true when body has over #{ResourceProperty.comment_body_max_length} in English" do
+      @comment.body = "a" * (ResourceProperty.comment_body_max_length) + "a" 
       @comment.should be_body_over_limit
     end
  
-    it "should be return true when body has over #{ResourceProperty.body_max_length} in Japanese" do
-      @comment.body = "あ" * (ResourceProperty.body_max_length) + "あ"
+    it "should be return true when body has over #{ResourceProperty.comment_body_max_length} in Japanese" do
+      @comment.body = "あ" * (ResourceProperty.comment_body_max_length) + "あ"
       @comment.should be_body_over_limit
     end
 
-    it "should be return false when body has under #{ResourceProperty.body_max_length} in English" do
-      @comment.body = "a" * (ResourceProperty.body_max_length) 
+    it "should be return false when body has under #{ResourceProperty.comment_body_max_length} in English" do
+      @comment.body = "a" * (ResourceProperty.comment_body_max_length) 
       @comment.should_not be_body_over_limit
     end
 
-    it "should be return false when body has under #{ResourceProperty.body_max_length} in Japanese" do 
-      @comment.body = "あ" * (ResourceProperty.body_max_length) 
+    it "should be return false when body has under #{ResourceProperty.comment_body_max_length} in Japanese" do 
+      @comment.body = "あ" * (ResourceProperty.comment_body_max_length) 
       @comment.should_not be_body_over_limit
     end
   end 

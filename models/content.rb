@@ -40,10 +40,11 @@ class Content
     Time.now - created_at < ResourceProperty.second_of_day 
   end
 
-  def set_params(params)
+  def set_params(params,updatable)
     params.each do |key,val|
       next if val.nil?
-      next unless self.class::UPDATABLE.include?(key.to_sym)
+      #next unless selfclass::UPDATABLE.include?(key.to_sym)
+      next unless updatable.include?(key.to_sym)
       self.send(key.to_s+"=",val)
     end
     self
@@ -61,8 +62,8 @@ class Content
     body == ""
   end
 
-  def body_over_limit?
-    body.length > ResourceProperty.body_max_length 
+  def body_over_limit?(body_max_length=nil)
+    body.length > body_max_length 
   end
 
   def check_valid_and_set_error_message

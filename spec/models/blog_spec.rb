@@ -32,15 +32,15 @@ describe Blog do
       @blog.should_not be_title_over_limit
     end
 
-    it "should return true when body has over #{ResourceProperty.body_max_length} charactors in English" do
+    it "should return true when body has over #{ResourceProperty.blog_body_max_length} charactors in English" do
       @blog.title = "bbb"
-      @blog.body = "a" * (ResourceProperty.body_max_length) + "a"
+      @blog.body = "a" * (ResourceProperty.blog_body_max_length) + "a"
       @blog.should be_body_over_limit
     end
 
-    it "should return false when body has under #{ResourceProperty.body_max_length} charactors in English" do
+    it "should return false when body has under #{ResourceProperty.blog_body_max_length} charactors in English" do
       @blog.title = "bbb"
-      @blog.body = "a" * (ResourceProperty.body_max_length) 
+      @blog.body = "a" * (ResourceProperty.blog_body_max_length) 
       @blog.should_not be_body_over_limit
     end
 
@@ -56,9 +56,9 @@ describe Blog do
       @blog.should_not be_title_over_limit
     end
 
-    it "should return true when body has over #{ResourceProperty.body_max_length} charactors in Japanese" do
+    it "should return true when body has over #{ResourceProperty.blog_body_max_length} charactors in Japanese" do
       @blog.title = "い"
-      @blog.body = "あ" * (ResourceProperty.body_max_length ) + "あ"
+      @blog.body = "あ" * (ResourceProperty.blog_body_max_length ) + "あ"
       @blog.should be_body_over_limit 
     end
 
@@ -106,7 +106,7 @@ describe Blog do
       @blog.body = 'body51'
       @blog.should be_save_valid
       page_number = (@contents_data.count + 1).quo(ResourceProperty.blog_contents_unit).ceil
-      last_blog = Blog.contents_paginate(page_number)[:data].last
+      last_blog = Blog.contents_paginate(page_number)[:data].first
       last_blog.title.should == @blog.title
       last_blog.body.should == @blog.body
     end

@@ -1,7 +1,19 @@
 title_max_length: 50 
-body_max_length: 300
 second_of_day: 86400
 blog_sort_column: 'updated_at'
-blog_contents_unit: 10
 comment_sort_column: 'created_at'
+blog_contents_unit: 10
 comment_contents_unit: 1000
+blog_body_max_length: 300
+comment_body_max_length: 50
+blog_updatable: 
+  - :id
+  - :title
+  - :body
+  - :created_at
+  - :updated_at
+comment_updatable: 
+  - :id
+  - :blog_id
+  - :body
+  - :created_at

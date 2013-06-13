@@ -29,4 +29,11 @@ class Blog < Content
     title.length > ResourceProperty.title_max_length
   end
 
+  def body_over_limit?
+    super(ResourceProperty.blog_body_max_length)
+  end
+
+  def set_params(params)
+    super(params,ResourceProperty.blog_updatable)
+  end
 end
