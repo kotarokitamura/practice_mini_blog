@@ -43,7 +43,6 @@ class Content
   def set_params(params,updatable)
     params.each do |key,val|
       next if val.nil?
-      #next unless selfclass::UPDATABLE.include?(key.to_sym)
       next unless updatable.include?(key.to_sym)
       self.send(key.to_s+"=",val)
     end

@@ -1,0 +1,10 @@
+!!!html5
+%html
+  %body
+    %form{:action => "./images/upload", :method => "post", :enctype => "multipart/form-data"}
+    %input{:type => "file", :name => "file"}
+    %input{:type => "submit", :name => "submit"}
+    
+    - @image.each do |image_path|
+      -#%img{:src => "file://#{image_path}"}
+    %img{:src => 'kitansang.jpg'}

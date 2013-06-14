@@ -6,6 +6,11 @@ class BlogsController < Sinatra::Base
     haml :index
   end
 
+  get '/images' do
+    @image = Image.get_images
+    haml :image
+  end
+
   get '/blogs/:id' do
     set_blog(params[:id])
     set_comments
@@ -40,6 +45,13 @@ class BlogsController < Sinatra::Base
     else
       haml :new
     end
+  end
+
+  post '/images/upload' do
+    @image = Image.new 
+    p params[:file][:tempfile] 
+    @image.copy_file(params)
+    haml :image
   end
 
   post '/blogs/:blog_id/comments' do
