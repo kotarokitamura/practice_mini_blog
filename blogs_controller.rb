@@ -49,9 +49,8 @@ class BlogsController < Sinatra::Base
 
   post '/images/upload' do
     @image = Image.new 
-    p params[:file][:tempfile] 
     @image.copy_file(params)
-    haml :image
+    redirect '/images'
   end
 
   post '/blogs/:blog_id/comments' do
