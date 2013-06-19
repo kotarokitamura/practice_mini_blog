@@ -1,10 +1,19 @@
 class Image
   attr_accessor :error_message
   
-  def upload_file?(file)
-    if check_image_valid?(file) 
-      open(get_save_path(file[:file][:filename]),"w+b") do |dest| 
-        open("#{file[:file][:tempfile].path}","r+b").each do |source|
+  def check_user_folder(id)
+    File.exist?("./public/images/#{id}") ? true : create_user_folder(id) 
+  end
+  
+  def create_user_folder(id)
+    FileUtils.mkdir_p("./public/images/#{id}")
+    true
+  end
+
+  def upload_file?(params)
+    if check_user_folder(params[:id]) && check_image_valid?(params) 
+      open(get_save_path(params[:file][:filename]),"w+b") do |dest| 
+        open("#{params[:file][:tempfile].path}","r+b").each do |source|
           dest.puts source
         end
       end 
@@ -13,7 +22,7 @@ class Image
       false
     end
   end
-  
+
   def get_save_path(file_name)
     File.expand_path(File.dirname(__FILE__) + "/../public/images/#{file_name}")
   end

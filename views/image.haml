@@ -2,7 +2,7 @@
   #{show_error_message(@image)}
 
 %body
-  %form{:action => "./images", :method => "post", :enctype => "multipart/form-data"}
+  %form{:action => "./image", :method => "post", :enctype => "multipart/form-data"}
     %input{:type => "file", :name => "file"}
     %input{:type => "submit", :name => "submit"}
   - @images.each do |image_path|

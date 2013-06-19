@@ -6,7 +6,7 @@ class BlogsController < Sinatra::Base
     haml :index
   end
 
-  get '/images' do
+  get '/blogs/:id/image' do
     @images = Image.get_images
     haml :image
   end
@@ -47,7 +47,7 @@ class BlogsController < Sinatra::Base
     end
   end
 
-  post '/images' do
+  post '/blogs/:id/image' do
     @image = Image.new 
     @images = Image.get_images
     if @image.upload_file?(params)
