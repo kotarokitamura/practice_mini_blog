@@ -7,7 +7,7 @@ class BlogsController < Sinatra::Base
   end
 
   get '/images' do
-    @image = Image.get_images
+    @images = Image.get_images
     haml :image
   end
 
@@ -47,10 +47,14 @@ class BlogsController < Sinatra::Base
     end
   end
 
-  post '/images/upload' do
+  post '/images' do
     @image = Image.new 
-    @image.copy_file(params)
-    redirect '/images'
+    @images = Image.get_images
+    if @image.upload_file?(params)
+      redirect '/images'
+    else
+      haml :image
+    end
   end
 
   post '/blogs/:blog_id/comments' do

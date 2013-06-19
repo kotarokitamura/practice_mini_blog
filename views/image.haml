@@ -1,8 +1,9 @@
-!!!html5
-%html
-  %body
-    %form{:action => "./images/upload", :method => "post", :enctype => "multipart/form-data"}
-      %input{:type => "file", :name => "file"}
-      %input{:type => "submit", :name => "submit"}
-    - @image.each do |image_path|
-      %img{:src => "#{image_path}"}
+%p{"style" => "color:red"}
+  #{show_error_message(@image)}
+
+%body
+  %form{:action => "./images", :method => "post", :enctype => "multipart/form-data"}
+    %input{:type => "file", :name => "file"}
+    %input{:type => "submit", :name => "submit"}
+  - @images.each do |image_path|
+    %img{:src => "#{image_path}"}
