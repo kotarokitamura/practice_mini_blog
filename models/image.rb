@@ -1,3 +1,4 @@
+require File.expand_path(File.dirname(__FILE__) + "/resource_property.rb")
 class Image
   attr_accessor :id,:error_message
   def check_user_folder(id)
@@ -28,8 +29,20 @@ class Image
 
   def check_image_valid?(file)
     @error_message = []
-    @error_message << "file is empty" unless file.has_key?("file")
+    if file.has_key?("file")
+      @error_message << "This file is not image" if false_extention?(file[:file][:filename])
+    else
+      @error_message << "file is empty" 
+    end
     @error_message.empty? ? true : false
+  end
+
+  def false_extention?(filename)
+    result = []
+    ResourceProperty.image_extention.each do |ext|
+      result <<  (/#{ext.to_s}\z/i =~ filename).nil?  
+    end
+    !result.include?(false)
   end
 
   def self.get_images(id)

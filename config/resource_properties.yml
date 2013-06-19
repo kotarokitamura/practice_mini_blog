@@ -17,3 +17,8 @@ comment_updatable:
   - :blog_id
   - :body
   - :created_at
+image_extention:
+  - :png
+  - :jpg
+  - :jepg
+  - :gif
