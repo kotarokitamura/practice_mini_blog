@@ -7,7 +7,7 @@ class BlogsController < Sinatra::Base
   end
 
   get '/blogs/:id/image' do
-    @images = Image.get_images
+    @images = Image.get_images(params[:id])
     haml :image
   end
 
@@ -49,9 +49,9 @@ class BlogsController < Sinatra::Base
 
   post '/blogs/:id/image' do
     @image = Image.new 
-    @images = Image.get_images
+    @images = Image.get_images(params[:id])
     if @image.upload_file?(params)
-      redirect '/images'
+      redirect "/blogs/#{params[:id]}/image"
     else
       haml :image
     end
