@@ -70,6 +70,8 @@ class BlogsController < Sinatra::Base
   end
 
   delete '/blogs/:id/image' do
+    Image.delete_one(params[:id])
+    redirect "/blogs/#{params[:id]}/image" 
   end
 
   delete '/blogs/:id' do

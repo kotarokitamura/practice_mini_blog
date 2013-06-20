@@ -58,4 +58,11 @@ class Image
     end
     @images
   end
+
+  def self.delete_one(id)
+    Dir.glob("./public/images/#{id}/*").each do |file|
+      File.delete("#{file}")
+    end
+  end
+ 
 end
