@@ -112,7 +112,7 @@ class BlogsController < Sinatra::Base
       content[:page_info][:current_page] + 1
     end
     
-    def delete_button(obj)
+    def file_exist?(obj)
       !obj.empty?
     end
   end
