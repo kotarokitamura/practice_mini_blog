@@ -69,6 +69,9 @@ class BlogsController < Sinatra::Base
     end
   end
 
+  delete '/blogs/:id/image' do
+  end
+
   delete '/blogs/:id' do
     Blog.delete_one(params[:id])
     redirect '/blogs'
@@ -105,6 +108,10 @@ class BlogsController < Sinatra::Base
 
     def previous_page(content)
       content[:page_info][:current_page] + 1
+    end
+    
+    def delete_button(obj)
+      !obj.empty?
     end
   end
 

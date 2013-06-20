@@ -7,3 +7,7 @@
     %input{:type => "submit", :name => "submit"}
   - @images.each do |image_path|
     %img{:src => "#{image_path}"}
+  - if delete_button(@images)
+    %form{"action"=>"./image", "method"=>"post"}
+      %input{"type"=>"hidden", "value"=>"DELETE", "name"=>"_method"}
+      %input{"type"=>"submit", "value"=>"delete"}

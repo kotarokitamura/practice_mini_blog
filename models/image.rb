@@ -1,17 +1,21 @@
 require File.expand_path(File.dirname(__FILE__) + "/resource_property.rb")
 class Image
   attr_accessor :id,:error_message
-  def check_user_folder(id)
+  def folder_exist?(id)
     File.exist?("./public/images/#{id}") ? true : create_user_folder(id) 
   end
   
+  def image_exist?(id)
+    !Dir.glob("./public/images/#{id}/*").empty?
+  end
+ 
   def create_user_folder(id)
     FileUtils.mkdir_p("./public/images/#{id}")
     File.exist?("./public/images/#{id}") ? true : false 
   end
 
   def upload_file?(params)
-    if check_image_valid?(params) && check_user_folder(params[:id])  
+    if image_valid?(params) && folder_exist?(params[:id])  
       open(get_save_path(params),"w+b") do |dest| 
         open("#{params[:file][:tempfile].path}","r+b").each do |source|
           dest.puts source
@@ -27,7 +31,8 @@ class Image
     File.expand_path(File.dirname(__FILE__) + "/../public/images/#{params[:id]}/#{params[:file][:filename]}")
   end
 
-  def check_image_valid?(file)
+
+  def image_valid?(file)
     @error_message = []
     if file.has_key?("file")
       @error_message << "This file is not image" if false_extention?(file[:file][:filename])
