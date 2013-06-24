@@ -1,5 +1,6 @@
 %p{"style" => "color:red"}
   #{show_error_message(@blog)}
+  #{show_error_message(@image)}
 
 %form{:action => "/blogs", :method => "post",:enctype => "multipart/form-data" }
   %div

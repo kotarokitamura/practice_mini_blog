@@ -2,7 +2,7 @@
 require File.expand_path(File.dirname(__FILE__) + "/../lib/paginate.rb")
  
 class Blog < Content
-  attr_accessor :title,:updated_at
+  attr_accessor :title,:file,:updated_at
   #-----------------------------
   # instance methods
   #-----------------------------

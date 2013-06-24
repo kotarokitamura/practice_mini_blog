@@ -39,8 +39,11 @@ class BlogsController < Sinatra::Base
 
   post '/blogs' do
     @blog = Blog.new
+    @image = Image.new
     @blog.set_params(params)
-    if @blog.save_valid?
+    if @blog.check_all_valid? && @image.image_valid?(params)
+      @blog.save_valid?
+      @image.upload_file?(params,@blog.id)
       redirect '/blogs'
     else
       haml :new

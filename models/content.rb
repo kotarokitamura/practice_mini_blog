@@ -1,7 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + "/resource_property.rb")
 require File.expand_path(File.dirname(__FILE__) + "/../lib/paginate.rb")  
 class Content
-  attr_accessor :id, :body, :created_at, :error_message
+  attr_accessor :id, :body, :created_at,:error_message
   include Paginate
   #----------------------------
   # class methods
@@ -28,14 +28,14 @@ class Content
   end
 
   def save_valid?
-    if check_all_valid?
+    #if check_all_valid?
       conect_info = ConnectDb.get_client
       conect_info.query(new_record? ? save_query_string : update_query_string)
-      blog_id =  conect_info.query('select last_insert_id ()').first["last_insert_id ()"]
-      true
-    else
-      false
-    end
+      self.id = conect_info.query('select last_insert_id ()').first["last_insert_id ()"]
+      #true
+    #else
+      #false
+    #end
   end
 
   def created_new?

@@ -12,6 +12,7 @@ blog_updatable:
   - :body
   - :created_at
   - :updated_at
+  - :file
 comment_updatable: 
   - :id
   - :blog_id
