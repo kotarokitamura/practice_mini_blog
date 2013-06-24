@@ -15,9 +15,8 @@ class Image
   end
 
   def upload_file?(params,id)
-    #if image_valid?(params) && folder_exist?(id)  
     if folder_exist?(id)  
-      open(get_save_path(params),"w+b") do |dest| 
+      open(get_save_path(params,id),"w+b") do |dest| 
         open("#{params[:file][:tempfile].path}","r+b").each do |source|
           dest.puts source
         end
@@ -28,8 +27,8 @@ class Image
     end
   end
 
-  def get_save_path(params)
-    File.expand_path(File.dirname(__FILE__) + "/../public/images/#{params[:id]}/#{params[:file][:filename]}")
+  def get_save_path(params,id)
+    File.expand_path(File.dirname(__FILE__) + "/../public/images/#{id}/#{params[:file][:filename]}")
   end
 
 
