@@ -50,15 +50,15 @@ class BlogsController < Sinatra::Base
     end
   end
 
-  post '/blogs/:id/image' do
-    @image = Image.new 
-    @images = Image.get_images(params[:id])
-    if @image.upload_file?(params)
-      redirect "/blogs/#{params[:id]}/image"
-    else
-      haml :image
-    end
-  end
+ # post '/blogs/:id/image' do
+    #@image = Image.new 
+    #@images = Image.get_images(params[:id])
+    #if @image.upload_file?(params)
+      #redirect "/blogs/#{params[:id]}/image"
+    #else
+      #haml :image
+    #end
+  #end
 
   post '/blogs/:blog_id/comments' do
     @comment = Comment.new
@@ -79,6 +79,7 @@ class BlogsController < Sinatra::Base
 
   delete '/blogs/:id' do
     Blog.delete_one(params[:id])
+    Image.delete_one(params[:id])
     redirect '/blogs'
   end
 
