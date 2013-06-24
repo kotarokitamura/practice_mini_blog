@@ -29,7 +29,9 @@ class Content
 
   def save_valid?
     if check_all_valid?
-      ConnectDb.get_client.query(new_record? ? save_query_string : update_query_string)
+      conect_info = ConnectDb.get_client
+      conect_info.query(new_record? ? save_query_string : update_query_string)
+      blog_id =  conect_info.query('select last_insert_id ()').first["last_insert_id ()"]
       true
     else
       false
