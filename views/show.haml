@@ -11,6 +11,9 @@
   %form{"action" => "/blogs/#{@blog.id}", "method" => "post"}
     %input{"type"=>"hidden", "value" => "DELETE", "name" => "_method"}
     %input{"type"=>"submit", "value"=>"delete"}
+%div
+  - @images.each do |image_path|
+    %img{:src => "#{image_path}"}
 %ul
   -@comments.each do |comment|
     %li
@@ -20,7 +23,6 @@
     %form{"action"=>"/blogs/#{@blog.id}/comments/#{comment.id}", "method" => "post"}
       %input{"type"=>"hidden","value"=>"DELETE","name"=>"_method"}
       %input{"type"=>"submit","value"=>"delete"}
-
 %form{"action" => "/blogs/#{@blog.id}/comments" ,"method" => "post"}
   %div 
     %textarea{"name" => "body"}
