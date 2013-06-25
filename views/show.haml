@@ -8,13 +8,9 @@
 %div
   %a{"href" => "/blogs/#{@blog.id}/edit"}
     edit
-  |
-  %a{"href" => "/blogs/#{@blog.id}/image"}
-    upload image
   %form{"action" => "/blogs/#{@blog.id}", "method" => "post"}
     %input{"type"=>"hidden", "value" => "DELETE", "name" => "_method"}
     %input{"type"=>"submit", "value"=>"delete"}
-
 %ul
   -@comments.each do |comment|
     %li

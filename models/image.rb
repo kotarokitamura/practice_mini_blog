@@ -63,6 +63,7 @@ class Image
     Dir.glob("./public/images/#{id}/*").each do |file|
       File.delete("#{file}")
     end
+    Dir.rmdir("./public/images/#{id}") if File.exist?("./public/images/#{id}")
   end
  
 end
