@@ -52,11 +52,11 @@ class Image
 
   def self.get_images(id)
     path = File.expand_path(File.dirname(__FILE__) + "/../public/images/#{id}/*")
-    @images = []
+    images = []
     Dir.glob(path).each do |image|
-      @images << image.gsub("/Users/kotarokitamura/mblog/public/","../../")
+      images << image.gsub("/Users/kotarokitamura/mblog/public/","../../")
     end
-    @images
+    images
   end
 
   def self.delete_one(id)
@@ -65,5 +65,4 @@ class Image
     end
     Dir.rmdir("./public/images/#{id}") if File.exist?("./public/images/#{id}")
   end
- 
 end
