@@ -28,14 +28,9 @@ class Content
   end
 
   def save_valid?
-    #if check_all_valid?
       conect_info = ConnectDb.get_client
       conect_info.query(new_record? ? save_query_string : update_query_string)
       self.id = conect_info.query('select last_insert_id ()').first["last_insert_id ()"]
-      #true
-    #else
-      #false
-    #end
   end
 
   def created_new?
