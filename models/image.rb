@@ -33,13 +33,13 @@ class Image
 
 
   def image_valid?(params)
-    @error_message = []
+    self.error_message = []
     if params.has_key?("file")
-      @error_message << "This file is not image" if false_extention?(params[:file][:filename])
+      self.error_message << "This file is not image" if false_extention?(params[:file][:filename])
     else
-      @error_message << "file is empty" 
+      self.error_message << "file is empty" 
     end
-    @error_message.empty? ? true : false
+    self.error_message.empty?
   end
 
   def false_extention?(filename)
