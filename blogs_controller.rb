@@ -7,6 +7,7 @@ class BlogsController < Sinatra::Base
   end
 
   get '/blogs/:id' do
+    @images = Image.get_images(params[:id])
     set_blog(params[:id])
     set_comments
     haml :show
@@ -34,8 +35,11 @@ class BlogsController < Sinatra::Base
 
   post '/blogs' do
     @blog = Blog.new
+    @image = Image.new
     @blog.set_params(params)
-    if @blog.save_valid?
+    if @blog.check_all_valid? && @image.image_valid?(params)
+      @blog.save_valid?
+      @image.upload_file?(params,@blog.id)
       redirect '/blogs'
     else
       haml :new
@@ -56,6 +60,7 @@ class BlogsController < Sinatra::Base
 
   delete '/blogs/:id' do
     Blog.delete_one(params[:id])
+    Image.delete_one(params[:id])
     redirect '/blogs'
   end
 
@@ -90,6 +95,10 @@ class BlogsController < Sinatra::Base
 
     def previous_page(content)
       content[:page_info][:current_page] + 1
+    end
+    
+    def file_exist?(obj)
+      !obj.empty?
     end
   end
 

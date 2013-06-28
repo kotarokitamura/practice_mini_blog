@@ -99,8 +99,8 @@ describe Blog do
     it 'should select_all_blogs and match all fixture data'  do 
       Blog.contents_paginate(1)[:data].count.should == 10
       Blog.contents_paginate(1)[:data].each_with_index do |blog,count|
-        blog.title.should == contents_data["blog#{count+1}"]["title"]
-        blog.body.should == contents_data["blog#{count+1}"]["body"]
+      @contents_data[count][:title].include?(blog.title).should be_true
+      @contents_data[count][:body].include?(blog.body).should be_true
       end 
     end
  
