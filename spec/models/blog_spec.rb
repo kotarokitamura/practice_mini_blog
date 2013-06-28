@@ -97,10 +97,10 @@ describe Blog do
     end
 
     it 'should select_all_blogs and match all fixture data'  do 
-      Blog.contents_paginate(1)[:data].count.should == 10
+      Blog.contents_paginate(1)[:data].count.should == ResourceProperty.blog_contents_unit 
       Blog.contents_paginate(1)[:data].each_with_index do |blog,count|
-      @contents_data[count][:title].include?(blog.title).should be_true
-      @contents_data[count][:body].include?(blog.body).should be_true
+        contents_data["blog#{count+1}"]["title"].include?(blog.title).should be_true
+        contents_data["blog#{count+1}"]["body"].include?(blog.body).should be_true
       end 
     end
  
@@ -154,7 +154,7 @@ describe Blog do
 
     it 'should check the page has next content or not' do
       Blog.has_previous?(1).should be_true
-      Blog.has_previous?(@contents_data.count/ResourceProperty.blog_contents_unit + 1).should be_false
+      Blog.has_previous?(contents_data.count/ResourceProperty.blog_contents_unit + 1).should be_false
     end
   end
 end

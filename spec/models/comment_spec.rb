@@ -90,7 +90,6 @@ describe Comment do
    
     it 'should get contents only limited number' do
       Comment.contents_paginate(nil,@blog)[:data].count.should == ResourceProperty.comment_contents_unit
-      Comment.contents_paginate(nil,@blog)[:data].last.body.should_not == @contents_data.last[:body]
     end
 
     after do 
