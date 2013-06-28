@@ -1,9 +1,8 @@
 # create table blogs (id INT UNSIGNED NOT NULL AUTO_INCREMENT,title TEXT, body TEXT, created_at DATETIME, updated_at DATETIME,primary key(id));
 require File.expand_path(File.dirname(__FILE__) + "/../lib/paginate.rb")
+ 
 class Blog < Content
-  TITLE_MAX_LENGTH = 50
   attr_accessor :title,:updated_at
-  UPDATABLE = [:id, :title, :body, :created_at, :updated_at]
   #-----------------------------
   # instance methods
   #-----------------------------
@@ -18,7 +17,7 @@ class Blog < Content
 
   def check_valid_and_set_error_message
     self.error_message << "title should not be blank." if title_empty?
-    self.error_message << "word count of title should be under #{TITLE_MAX_LENGTH} capitals" if title_over_limit?
+    self.error_message << "word count of title should be under #{ResourceProperty.title_max_length} capitals" if title_over_limit?
   end
 
   def title_empty?
@@ -26,7 +25,14 @@ class Blog < Content
   end
 
   def title_over_limit?
-    title.length > TITLE_MAX_LENGTH
+    title.length > ResourceProperty.title_max_length
   end
 
+  def body_over_limit?
+    super(ResourceProperty.blog_body_max_length)
+  end
+
+  def set_params(params)
+    super(params,ResourceProperty.blog_updatable)
+  end
 end

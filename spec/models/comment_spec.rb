@@ -18,23 +18,23 @@ describe Comment do
       @comment.should_not be_body_empty
     end
 
-    it "should be return true when body has over #{Comment::BODY_MAX_LENGTH} in English" do
-      @comment.body = "a" * (Comment::BODY_MAX_LENGTH) + "a" 
+    it "should be return true when body has over #{ResourceProperty.comment_body_max_length} in English" do
+      @comment.body = "a" * (ResourceProperty.comment_body_max_length) + "a" 
       @comment.should be_body_over_limit
     end
  
-    it "should be return true when body has over #{Comment::BODY_MAX_LENGTH} in Japanese" do
-      @comment.body = "あ" * (Comment::BODY_MAX_LENGTH) + "あ"
+    it "should be return true when body has over #{ResourceProperty.comment_body_max_length} in Japanese" do
+      @comment.body = "あ" * (ResourceProperty.comment_body_max_length) + "あ"
       @comment.should be_body_over_limit
     end
 
-    it "should be return false when body has under #{Comment::BODY_MAX_LENGTH} in English" do
-      @comment.body = "a" * (Comment::BODY_MAX_LENGTH) 
+    it "should be return false when body has under #{ResourceProperty.comment_body_max_length} in English" do
+      @comment.body = "a" * (ResourceProperty.comment_body_max_length) 
       @comment.should_not be_body_over_limit
     end
 
-    it "should be return false when body has under #{Comment::BODY_MAX_LENGTH} in Japanese" do 
-      @comment.body = "あ" * (Comment::BODY_MAX_LENGTH) 
+    it "should be return false when body has under #{ResourceProperty.comment_body_max_length} in Japanese" do 
+      @comment.body = "あ" * (ResourceProperty.comment_body_max_length) 
       @comment.should_not be_body_over_limit
     end
   end 
@@ -46,7 +46,7 @@ describe Comment do
     end
     
     it 'should be return false when the comment posted before over a day' do 
-      @comment.created_at = Time.now - Comment::SECONDS_OF_DAY
+      @comment.created_at = Time.now - ResourceProperty.second_of_day 
       @comment.should_not be_created_new
     end
   end
@@ -89,7 +89,8 @@ describe Comment do
     end
    
     it 'should get contents only limited number' do
-      Comment.contents_paginate(nil,@blog)[:data].count.should == Comment::COMMENT_CONTENTS_UNIT
+      Comment.contents_paginate(nil,@blog)[:data].count.should == ResourceProperty.comment_contents_unit
+      Comment.contents_paginate(nil,@blog)[:data].last.body.should_not == @contents_data.last[:body]
     end
 
     after do 

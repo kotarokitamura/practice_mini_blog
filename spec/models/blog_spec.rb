@@ -29,50 +29,51 @@ describe Blog do
       @blog.should be_body_empty
     end   
     
-    it "should return true when title has over #{Blog::TITLE_MAX_LENGTH} charactors in English" do
-      @blog.title = "a" * (Blog::TITLE_MAX_LENGTH) + "a"
+    it "should return true when title has over #{ResourceProperty.title_max_length} charactors in English" do
+      @blog.title = "a" * (ResourceProperty.title_max_length) + "a"
       @blog.body = "bbb"
       @blog.should be_title_over_limit
     end
 
-    it "should retrun false when title has under  #{Blog::TITLE_MAX_LENGTH} charactors in English" do
-      @blog.title = "a" * (Blog::TITLE_MAX_LENGTH) 
+    it "should retrun false when title has under  #{ResourceProperty.title_max_length} charactors in English" do
+      @blog.title = "a" * (ResourceProperty.title_max_length) 
       @blog.body = "bbb"
       @blog.should_not be_title_over_limit
     end
 
-    it "should return true when title has over #{Blog::BODY_MAX_LENGTH} charactors in English" do
+    it "should return true when body has over #{ResourceProperty.blog_body_max_length} charactors in English" do
       @blog.title = "bbb"
-      @blog.body = "a" * (Blog::BODY_MAX_LENGTH ) + "a"
+      @blog.body = "a" * (ResourceProperty.blog_body_max_length) + "a"
       @blog.should be_body_over_limit
     end
 
-    it "should return false when title has under #{Blog::BODY_MAX_LENGTH} charactors in English" do
+    it "should return false when body has under #{ResourceProperty.blog_body_max_length} charactors in English" do
       @blog.title = "bbb"
-      @blog.body = "a" * (Blog::BODY_MAX_LENGTH ) 
+      @blog.body = "a" * (ResourceProperty.blog_body_max_length) 
       @blog.should_not be_body_over_limit
     end
 
-    it "should return true when title has over #{Blog::TITLE_MAX_LENGTH} charactors in Japanese" do
-      @blog.title = "あ" * (Blog::TITLE_MAX_LENGTH) + "あ"
+    it "should return true when title has over #{ResourceProperty.title_max_length} charactors in Japanese" do
+      @blog.title = "あ" * (ResourceProperty.title_max_length) + "あ"
       @blog.body = "い"
       @blog.should be_title_over_limit
     end
 
-    it "should retrun false when title has under  #{Blog::TITLE_MAX_LENGTH} charactors in Japanese" do
-      @blog.title = "あ" * (Blog::TITLE_MAX_LENGTH) 
+    it "should retrun false when title has under  #{ResourceProperty.title_max_length} charactors in Japanese" do
+      @blog.title = "あ" * (ResourceProperty.title_max_length) 
       @blog.body = "い"
       @blog.should_not be_title_over_limit
     end
 
-    it "should return true when title has over #{Blog::BODY_MAX_LENGTH} charactors in Japanese" do
+    it "should return true when body has over #{ResourceProperty.blog_body_max_length} charactors in Japanese" do
       @blog.title = "い"
-      @blog.body = "あ" * (Blog::BODY_MAX_LENGTH ) + "あ"
-      @blog.should be_body_over_limit end
+      @blog.body = "あ" * (ResourceProperty.blog_body_max_length ) + "あ"
+      @blog.should be_body_over_limit 
+    end
 
-    it "should return false when title has under #{Blog::BODY_MAX_LENGTH} charactors in Japanese" do
+    it "should return false when body has under #{ResourceProperty.title_max_length} charactors in Japanese" do
       @blog.title = "い"
-      @blog.body = "あ" * (Blog::BODY_MAX_LENGTH ) 
+      @blog.body = "あ" * (ResourceProperty.title_max_length) 
       @blog.should_not be_body_over_limit
     end
   end
@@ -84,7 +85,7 @@ describe Blog do
     end
     
     it 'should retrun false when the article posted before over a day' do 
-      @blog.created_at = Time.now - Blog::SECONDS_OF_DAY 
+      @blog.created_at = Time.now - ResourceProperty.second_of_day 
       @blog.should_not be_created_new
     end 
   end
@@ -96,6 +97,7 @@ describe Blog do
     end
 
     it 'should select_all_blogs and match all fixture data'  do 
+      Blog.contents_paginate(1)[:data].count.should == 10
       Blog.contents_paginate(1)[:data].each_with_index do |blog,count|
         blog.title.should == contents_data["blog#{count+1}"]["title"]
         blog.body.should == contents_data["blog#{count+1}"]["body"]
@@ -152,7 +154,7 @@ describe Blog do
 
     it 'should check the page has next content or not' do
       Blog.has_previous?(1).should be_true
-      Blog.has_previous?(contents_data.count/Blog::BLOG_CONTENTS_UNIT + 1).should be_false
+      Blog.has_previous?(@contents_data.count/ResourceProperty.blog_contents_unit + 1).should be_false
     end
   end
 end
